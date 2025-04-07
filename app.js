@@ -1040,9 +1040,9 @@ createApp({
   },
   mounted() {
     this.supabase = supabase.createClient(
-        process.env.VUE_APP_SUPABASE_URL,
-        process.env.VUE_APP_SUPABASE_API_KEY
-     );
+      "https://hthtzipxhfezjduxskzg.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0aHR6aXB4aGZlempkdXhza3pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE5MTE1MzQsImV4cCI6MjA1NzQ4NzUzNH0.e-SodT9c9kv6Gm4HytAjYoIvnOfQTvFBFzLTiGFaxwg"
+    );
     fetch("https://api.ipify.org?format=json")
       .then(response => response.json())
       .then(data => { this.clientIP = data.ip; })
