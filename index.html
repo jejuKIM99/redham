@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Red Line Awards</title>
+  <link rel="icon" href="./favicon.ico">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css" rel="stylesheet" />
+  <link href="https://fonts.cdnfonts.com/css/free-license" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/asap-condensed" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body ondragstart="return false" ondrop="return false" onselectstart="return false">
+  <div id="app">
+    <div id="loading-overlay">
+      <div id="loading-text">R.L.A</div>
+      <div id="loading-percentage">0%</div>
+      <div id="loading-bar-container">
+        <div id="loading-bar"></div>
+      </div>
+    </div>
+    <div id="intro-overlay">
+      <video id="bg-video" muted loop playsinline>
+        <source src="./video2.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <div id="slogan-container">
+        <div class="slogan-warp">
+          <div id="slogan">Red Line Awards</div>
+          <button id="enter-btn" @click="enBtn">Click to enter</button>
+        </div>
+      </div>
+    </div>
+    <div id="main-content">
+      <!-- 추가된 사이드 배너 -->
+      <div id="left-sidebanner" class="sidebanner">
+        <img :src="leftBannerImage" alt="Left Sidebanner Banner" />
+      </div>
+      <div id="right-sidebanner" class="sidebanner">
+        <img :src="rightBannerImage" alt="Right Sidebanner Banner" />
+      </div>
+      <nav id="navbar">
+        <div class="nav-container">
+          <div class="nav-left">
+            <button id="nav-toggle" @click="navTog($event)">▼</button>
+          </div>
+          <div class="nav-center">
+            <div id="nav-logo" @click="chPg('home')"><img class="logo_img" src="./logo.png"></div>
+          </div>
+          <div class="nav-right"></div>
+        </div>
+        <div id="nav-dropdown">
+          <div class="dropdown-column">
+            <h4>About</h4>
+            <ul>
+              <li><a href="#" @click.prevent="chPg('aboutSub1')">What is RLA</a></li>
+              <li><a href="#" @click.prevent="chPg('aboutSub2')">Site Tutorial</a></li>
+            </ul>
+          </div>
+          <div class="dropdown-column">
+            <h4>Award</h4>
+            <ul>
+              <li><a href="#" @click.prevent="chPg('awardSub1')">Movie of the Month</a></li>
+              <li><a href="#" @click.prevent="chPg('awardSub2')">Movie of the Year</a></li>
+              <li><a href="#" @click.prevent="chPg('awardSub3')">Nominee List</a></li>
+            </ul>
+          </div>
+          <div class="dropdown-column">
+            <h4>LIST</h4>
+            <ul>
+              <li><a href="#" @click.prevent="chPg('listSub1')">Soundtrack</a></li>
+              <li><a href="#" @click.prevent="chPg('listSub2')">Master's Pick</a></li>
+            </ul>
+          </div>
+          <div class="dropdown-column">
+            <h4>BOARD</h4>
+            <ul>
+              <li><a href="#" @click.prevent="chPg('boardSub1')">Notices Board</a></li>
+              <li><a href="#" @click.prevent="chPg('boardSub2')">Event Board</a></li>
+              <li><a href="#" @click.prevent="chPg('boardSub3')">Movie Discussion</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div id="sidebar">
+        <div class="sidebar-nowplaying">
+          <h4>Movies Now Playing</h4>
+          <ul id="now-playing-list"></ul>
+        </div>
+      </div>
+      <div id="sidebar-overlay"></div>
+      <div id="page-container" :class="{ blurred: showPostView || showMovieDetail }">
+        <div v-if="cp === 'home'" class="page">
+          <div id="main-slider" class="swiper-container">
+            <div class="swiper-wrapper">
+              <div v-for="(image, index) in mainSliderImages" :key="index" class="swiper-slide">
+                <img :src="image" alt="Main Slider Image" />
+              </div>
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
+          </div>
+          <section id="section1">
+            <div class="section-title">RLA Recommendation</div>
+            <div id="movie-grid" class="movie-grid">
+              <div v-for="movie in rlaRecommendations" :key="movie.id" class="movie-poster" @click="showExpanded(movie.id)">
+                <img :src="movie.poster_url" alt="Movie Poster" />
+              </div>
+            </div>
+            <div id="movie-expanded" class="movie-expanded" style="display: none;">
+              <div id="movie-expanded-wrapper">
+                <button id="close-expanded" class="close-expanded" @click="clsExp">X</button>
+                <div class="movie-expanded-content">
+                  <div class="movie-slider-container">
+                    <div class="swiper-container movie-slider">
+                      <div class="swiper-wrapper">
+                        <div v-for="(still, index) in currentStills" :key="index" class="swiper-slide">
+                          <img :src="still" alt="Movie Still"/>
+                        </div>
+                      </div>
+                      <div class="swiper-button-next movie-slider-next"></div>
+                      <div class="swiper-button-prev movie-slider-prev"></div>
+                      <div class="swiper-pagination movie-slider-pagination"></div>
+                    </div>
+                  </div>
+                  <div class="movie-info">
+                    <h2 id="movie-title" style="border-bottom: solid 2px #fff; padding-bottom: 1rem;">{{ currentMovie.title }}</h2>
+                    <p id="movie-description" style="white-space: pre-line; padding-bottom: 1rem; margin-top: 0.8rem; border-bottom: solid 2px #fff;">{{ currentMovie.description }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section id="section2">
+            <div class="section-title">Movie of the Month</div>
+            <div class="award-container">
+              <div class="award-poster">
+                <div class="award-poster-img"></div>
+                <div class="award-badge">
+                  Movie of the Month&nbsp;<span id="award-date"></span>
+                </div>
+              </div>
+              <div class="award-description">
+                <h2>수상작 제목</h2>
+                <p>이 영화의 설명이 여기에 표시됩니다.</p>
+              </div>
+            </div>
+          </section>
+          <section id="section3">
+            <div class="section-title">Movie of the Year</div>
+            <div class="award-poster-container">
+              <div class="award-poster" @mousemove="handlePosterMouseMove" @mouseleave="handlePosterMouseLeave">
+                <div class="award-banner">
+                    Movie of the Year&nbsp;<span id="award-year"></span>
+                </div>
+              </div>
+            </div>
+            <div class="slider-container top-slider" id="still-slider">
+              <div class="continuous-slider top"></div>
+              <div class="slider-shadow left-shadow"></div>
+              <div class="slider-shadow right-shadow"></div>
+            </div>
+            <div class="award-description">
+              <h2>수상작 제목 (작년)</h2>
+              <p>이 영화의 설명이 여기에 표시됩니다.</p>
+            </div>
+          </section>
+          <section id="section4">
+            <div class="slider-container top-slider">
+              <div class="continuous-slider top">
+                <template v-for="(movie, index) in randomYearList">
+                  <div class="slide" :key="'year-' + index">
+                    <div class="poster" :style="{ backgroundImage: 'url(' + movie.poster_url + ')' }"></div>
+                  </div>
+                </template>
+                <template v-for="(movie, index) in randomYearList">
+                  <div class="slide" :key="'year-dup-' + index">
+                    <div class="poster" :style="{ backgroundImage: 'url(' + movie.poster_url + ')' }"></div>
+                  </div>
+                </template>
+              </div>
+              <div class="slider-shadow left-shadow"></div>
+              <div class="slider-shadow right-shadow"></div>
+            </div>
+            <div class="section4-center" style="text-align: center; margin-top: 0.4rem; margin-bottom: 1.8rem;">
+              <p>Meet the award-winning works throughout history.</p>
+              <a href="#" class="view-more-btn" id="view-more-btn">View More</a>
+            </div>
+            <div class="slider-container bottom-slider">
+              <div class="continuous-slider bottom">
+                <template v-for="(movie, index) in randomMonthList">
+                  <div class="slide" :key="'month-' + index">
+                    <div class="poster" :style="{ backgroundImage: 'url(' + movie.poster_url + ')' }"></div>
+                  </div>
+                </template>
+                <template v-for="(movie, index) in randomMonthList">
+                  <div class="slide" :key="'month-dup-' + index">
+                    <div class="poster" :style="{ backgroundImage: 'url(' + movie.poster_url + ')' }"></div>
+                  </div>
+                </template>
+              </div>
+              <div class="slider-shadow left-shadow"></div>
+              <div class="slider-shadow right-shadow"></div>
+            </div>
+          </section>
+          <footer class="custom-footer">
+            <div class="footer-container">
+              <div class="footer-image"><img src="./footer_img1.png" style="width: 100%; filter: drop-shadow(17px 10px 12px #000);"></div>
+              <div class="footer-content">
+                <h3>Red Line Awards</h3>
+                <p>Copyright © 2025 redlineawards.co.kr All rights reserved.</p>
+                <p>If you want to contact webmaster for more information, please using Live Support chat or dev center.</p>
+                <ul>
+                  <li><a href="./dev.html" target='_blank' >Dev Center <img src="./devcenter.png"> </a></li>
+                  <li><a href="#" target='_blank' >Official Instagram <img src="./official.png"> </a></li>
+                  <li><a href="./business.html" target='_blank' >Business <img src="./business.png"> </a></li>
+                </ul>
+              </div>
+            </div>
+          </footer>
+        </div>
+        <div v-if="cp === 'aboutSub1'" class="page">
+          <section id="aboutSub1">
+            <div class="section-wrapper">
+              <div class="section-title">What is R.L.A</div>
+              <div class="section-content odd">
+                <div class="text-container">
+                  <p><strong>R.L.A stands for Red Line Awards.</strong><br>
+                    We introduce a wide range of films, bringing even older movies back into the spotlight and onto your screens. Our goal is to recommend and recognize films regardless of their release date, genre, or popularity.<br>
+                    We are committed to providing <strong style="color: #e90000;">fair evaluations and a user-friendly experience</strong> to ensure the best possible service for our audience.</p>
+                </div>
+                <div class="image-container">
+                  <img src="./logo.png" alt="섹션 1 이미지" />
+                </div>
+              </div>
+            </div>
+            <div class="section-wrapper">
+              <div class="section-title">Awards</div>
+              <div class="section-content even">
+                <div class="image-container">
+                  <img src="./sec2.jpg" alt="섹션 2 이미지" />
+                </div>
+                <div class="text-container">
+                  <p>We present<strong> annual and monthly awards.</strong><br>
+                    The<strong> Nominee List</strong> features all award contenders, and you can vote directly for your favorites.<br>
+                   <strong style="color: #e90000;">[Warning: Each movie can be voted for only once, and votes cannot be modified or canceled, so please choose carefully.]</strong><br>
+                   The final winners are determined by combining user votes and jury evaluations. Award-winning films will be showcased on the main page and permanently uploaded to the<strong> Movie of the Month/Year</strong> sections.</p>
+                </div>
+              </div>
+            </div>
+            <div class="section-wrapper">
+              <div class="section-title">Dev Center</div>
+              <div class="section-content odd">
+                <div class="text-container">
+                  <p>We operate a<strong> Dev Center</strong> for developers, providing simple code snippets and explanations for key features with each update. While not every function is included, the information is designed to be helpful for development learning.<br>
+                    The documentation is available in<strong> Korean and English.</strong><br>
+                    For further inquiries, please use the<strong> Live Support</strong> feature located at the bottom left of the main page.</p>
+                </div>
+                <div class="image-container">
+                  <img src="./sec3.jpg" alt="섹션 3 이미지" />
+                </div>
+              </div>
+            </div>
+            <div class="section-wrapper">
+              <div class="section-title">Business Service</div>
+              <div class="section-content even">
+                <div class="image-container">
+                  <img src="./sec4.jpg" alt="섹션 4 이미지" />
+                </div>
+                <div class="text-container">
+                  <p>We operate a<strong> Business Services</strong> platform for utilizing various advertising options on our site. In addition to banner ads, we offer post advertisement services and more.<br>
+                  <strong>Editor recruitment evaluations</strong> are also conducted through this service.<br>
+                  As we continue to expand, we aim to provide even more business solutions in the future.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div v-if="cp === 'aboutSub2'" class="page">
+          <section id="aboutSub2">
+            <div class="tutorial-indicator">
+              <ul>
+                <li><a href="#main" @click.prevent="scrollToSection('main')">Main</a></li>
+                <li><a href="#award" @click.prevent="scrollToSection('award')">Award</a></li>
+                <li><a href="#list" @click.prevent="scrollToSection('list')">List</a></li>
+                <li><a href="#board" @click.prevent="scrollToSection('board')">Board</a></li>
+              </ul>
+            </div>
+            <div class="tutorial-content">
+              <div id="main" class="tutorial-section">
+                <h2 style="width: 5rem;">Main</h2>
+                <p>The main page introduces RLA's key content, including the main slider, RLA's recommended movies, this month's featured films, and the movies of the year.</p>
+                <p>Users can check out the latest updates through the main slider and click on RLA's recommended movies to view detailed information.</p>
+              </div>
+              <div id="award" class="tutorial-section">
+                <h2 style="width: 7rem;">Award</h2>
+                <p>In the Awards menu, users can view This <strong>[Movie of the Month], [Movie of the Year]</strong>, and the <strong>[list of nominees]</strong>.</p>
+                <p><strong>Nominee List</strong>: The monthly and yearly lists are reset at the beginning of each period. At the end of each month or year, winners are selected through a <strong>[Movie Discussion]</strong>, where opinions on each nominee are gathered and reviewed.</p>
+              </div>
+              <div id="list" class="tutorial-section">
+                <h2 style="width: 4.2rem;">List</h2>
+                <p>In the List menu, users can explore Soundtracks and <strong>[Master’s Picks]</strong>.</p>
+                <p><strong>Master's Pick</strong>: The Master occasionally recommends movies on an irregular basis.</p>
+              </div>
+              <div id="board" class="tutorial-section">
+                <h2 style="width: 6.6rem;">Board</h2>
+                <p>In the Board menu, users can access Announcements, Events, and Movie Discussions.</p>
+                <p><strong>Movie Discussion</strong>: The board uses a <strong>[floating post system]</strong>, meaning that when a comment is added, the post moves to the top regardless of its original creation date. Each post assigns a unique nickname per IP address, and comments cannot be edited or deleted, so <span style="color: #e90000;"><strong>please write carefully.</strong></span></p>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div v-if="cp === 'awardSub1'" class="page award-page">
+          <section id="awardSub1" class="award-wrapper">
+            <div class="award-header">
+              <h1 class="award-title">Movie of the Month</h1>
+              <div class="filter-group">
+                <button :class="{'active': selectedFilter.awardSub1==='Newest'}" @click="fltCh('awardSub1','Newest')">Newest</button>
+                <button :class="{'active': selectedFilter.awardSub1==='Oldest'}" @click="fltCh('awardSub1','Oldest')">Oldest</button>
+                <button :class="{'active': selectedFilter.awardSub1==='Rate'}" @click="fltCh('awardSub1','Rate')">Rate</button>
+              </div>
+            </div>
+            <div class="movie-grid-award" ref="grid_awardSub1">
+              <div v-if="pagedItems.awardSub1.length === 0" style="text-align: center; padding: 20px; color: #fff;">No Post</div>
+              <div v-for="movie in pagedItems.awardSub1" :key="movie.id" class="movie-item" @click="openMovieDetail(movie)">
+                <div class="poster" :style="{ backgroundImage: 'url(' + movie.poster_url + ')' }"></div>
+                <div class="movie-info">
+                  <span class="movie-title">{{ movie.title }}</span>
+                  <span class="movie-rating">{{ movie.rating }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagination">
+              <button @click="pgPr('awardSub1')" :disabled="currentPage.awardSub1 === 1">Prev</button>
+              <span>{{ currentPage.awardSub1 }} / {{ totalPages.awardSub1 }}</span>
+              <button @click="pgNx('awardSub1')" :disabled="currentPage.awardSub1 === totalPages.awardSub1">Next</button>
+            </div>
+          </section>
+        </div>
+        <div v-if="cp === 'awardSub2'" class="page award-page">
+          <section id="awardSub2" class="award-wrapper">
+            <div class="award-header">
+              <h1 class="award-title">Movie of the Year</h1>
+              <div class="filter-group">
+                <button :class="{'active': selectedFilter.awardSub2==='Newest'}" @click="fltCh('awardSub2','Newest')">Newest</button>
+                <button :class="{'active': selectedFilter.awardSub2==='Oldest'}" @click="fltCh('awardSub2','Oldest')">Oldest</button>
+                <button :class="{'active': selectedFilter.awardSub2==='Rate'}" @click="fltCh('awardSub2','Rate')">Rate</button>
+              </div>
+            </div>
+            <div class="movie-grid-award" ref="grid_awardSub2">
+              <div v-if="pagedItems.awardSub2.length === 0" style="text-align: center; padding: 20px; color: #fff;">No Post</div>
+              <div v-for="movie in pagedItems.awardSub2" :key="movie.id" class="movie-item" @click="openMovieDetail(movie)">
+                <div class="poster" :style="{ backgroundImage: 'url(' + movie.poster_url + ')' }"></div>
+                <div class="movie-info">
+                  <span class="movie-title">{{ movie.title }}</span>
+                  <span class="movie-rating">{{ movie.rating }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagination">
+              <button @click="pgPr('awardSub2')" :disabled="currentPage.awardSub2 === 1">Prev</button>
+              <span>{{ currentPage.awardSub2 }} / {{ totalPages.awardSub2 }}</span>
+              <button @click="pgNx('awardSub2')" :disabled="currentPage.awardSub2 === totalPages.awardSub2">Next</button>
+            </div>
+          </section>
+        </div>
+        <div v-if="cp === 'awardSub3'" class="page award-page">
+          <section id="awardSub3" class="award-wrapper">
+            <div class="award-header">
+              <div class="header-block">
+                <h1 class="award-title">Nominee List</h1>
+                <div class="refresh-container">
+                  <button class="refresh-btn" @click="refreshNominees">
+                    <img src="./refresh-icon.png" alt="Refresh" />
+                  </button>
+                  <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+                </div>
+              </div>
+              <div class="filter-group">
+                <button :class="{'active': selectedFilter.awardSub3==='Month'}" @click="fltCh('awardSub3','Month')">Month</button>
+                <button :class="{'active': selectedFilter.awardSub3==='Year'}" @click="fltCh('awardSub3','Year')">Year</button>
+              </div>
+            </div>
+            <div class="movie-grid-award" ref="grid_awardSub3">
+              <div v-if="pagedItems.awardSub3.length === 0" style="text-align: center; padding: 20px; color: #fff;">No Post</div>
+              <div v-for="movie in pagedItems.awardSub3" :key="movie.id" class="movie-item" @click="openNomineeDetail(movie)">
+                <div class="poster" :style="{ backgroundImage: 'url(' + movie.poster_url + ')' }"></div>
+                <div class="movie-info">
+                  <span class="movie-title">{{ movie.title }}</span>
+                  <span class="movie-rating">{{ movie.rating }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagination">
+              <button @click="pgPr('awardSub3')" :disabled="currentPage.awardSub3 === 1">Prev</button>
+              <span>{{ currentPage.awardSub3 }} / {{ totalPages.awardSub3 }}</span>
+              <button @click="pgNx('awardSub3')" :disabled="currentPage.awardSub3 === totalPages.awardSub3">Next</button>
+            </div>
+            <!-- 새로 추가된 경고 모달 -->
+            <div v-if="showWarningModal" class="warning-modal">
+              <div class="modal-content">
+                <img src="./logo.png" alt="Logo" class="modal-logo" />
+                <div class="modal-divider"></div>
+                <p class="modal-text">
+                  This is a space where you can vote for award-winning films. Each user can vote only once per movie.<br>
+                  Once you click the "Submit Vote" button, <span style="border-radius: 4px; margin-top: 2px; padding: 2px; font-size: 20px; font-weight: 700; background-color: #000; color: #e90000;">your vote cannot be modified or canceled, so please vote carefully.</span>
+                </p>
+                <button class="confirm-btn" @click="confirmWarning">Confirm</button>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div v-if="cp === 'listSub1'" class="page">
+          <section id="listSub1" ref="listSub1">
+            <div class="board-header">
+              <h1>Soundtrack</h1>
+              <div class="filter-group">
+                <button :class="{'active': selectedFilter.listSub1==='Newest'}" @click="boardFltCh('listSub1','Newest')">Newest</button>
+                <button :class="{'active': selectedFilter.listSub1==='Oldest'}" @click="boardFltCh('listSub1','Oldest')">Oldest</button>
+                <button :class="{'active': selectedFilter.listSub1==='Views'}" @click="boardFltCh('listSub1','Views')">Most Viewed</button>
+              </div>
+            </div>
+            <div class="board-list">
+              <div v-if="pagedBoard.listSub1.length === 0" style="text-align: center; padding: 20px; color: #fff;">No Post</div>
+              <div v-for="post in pagedBoard.listSub1" :key="post.id" class="board-item" @click="openPostView('listSub1', post)">
+                <div class="post-title">{{ post.title }}</div>
+                <div class="post-date">{{ post.date }}</div>
+              </div>
+            </div>
+            <div class="search-bar">
+              <input type="text" v-model="searchQuery.listSub1" placeholder="검색" @keydown.enter="searchPosts('listSub1')">
+              <button class="search-submit" @click="searchPosts('listSub1')">입력</button>
+            </div>
+            <div class="pagination">
+              <button @click="boardPgPr('listSub1')" :disabled="currentBoardPage.listSub1 === 1">Prev</button>
+              <span>{{ currentBoardPage.listSub1 }} / {{ totalBoardPages.listSub1 }}</span>
+              <button @click="boardPgNx('listSub1')" :disabled="currentBoardPage.listSub1 === totalBoardPages.listSub1">Next</button>
+            </div>
+          </section>
+        </div>
+        <div v-if="cp === 'listSub2'" class="page award-page">
+          <section id="listSub2" class="award-wrapper">
+            <div class="award-header">
+              <h1 class="award-title">Master's Pick</h1>
+              <div class="filter-group">
+                <button :class="{'active': selectedFilter.listSub2==='Newest'}" @click="fltCh('listSub2','Newest')">Newest</button>
+                <button :class="{'active': selectedFilter.listSub2==='Oldest'}" @click="fltCh('listSub2','Oldest')">Oldest</button>
+                <button :class="{'active': selectedFilter.listSub2==='Views'}" @click="fltCh('listSub2','Views')">Most Viewed</button>
+              </div>
+            </div>
+            <div class="movie-grid-award" ref="grid_listSub2">
+              <div v-if="pagedItems.listSub2.length === 0" style="text-align: center; padding: 20px; color: #fff;">No Post</div>
+              <div v-for="item in pagedItems.listSub2" :key="item.id" class="movie-item" @click="openMovieDetail(item)">
+                <div class="poster" :style="{ backgroundImage: 'url(' + item.image + ')' }"></div>
+                <div class="movie-info">
+                  <span class="movie-title">{{ item.title }}</span>
+                  <span class="movie-views">{{ item.views }} views</span>
+                </div>
+              </div>
+            </div>
+            <div class="search-bar">
+              <input type="text" v-model="searchQuery.listSub2" placeholder="검색" @keydown.enter="searchItems('listSub2')">
+              <button class="search-submit" @click="searchItems('listSub2')">입력</button>
+            </div>
+            <div class="pagination">
+              <button @click="pgPr('listSub2')" :disabled="currentPage.listSub2 === 1">Prev</button>
+              <span>{{ currentPage.listSub2 }} / {{ totalPages.listSub2 }}</span>
+              <button @click="pgNx('listSub2')" :disabled="currentPage.listSub2 === totalPages.listSub2">Next</button>
+            </div>
+          </section>
+        </div>
+        <div v-if="cp === 'boardSub1'" class="page">
+          <section id="boardSub1" ref="boardSub1">
+            <div class="board-header">
+              <h1>Notices Board</h1>
+              <div class="filter-group">
+                <button :class="{'active': selectedFilter.boardSub1==='Newest'}" @click="boardFltCh('boardSub1','Newest')">Newest</button>
+                <button :class="{'active': selectedFilter.boardSub1==='Oldest'}" @click="boardFltCh('boardSub1','Oldest')">Oldest</button>
+              </div>
+            </div>
+            <div class="board-list">
+              <div v-if="pagedBoard.boardSub1.length === 0" style="text-align: center; padding: 20px; color: #fff;">No Post</div>
+              <div v-for="post in pagedBoard.boardSub1" :key="post.id" class="board-item" @click="openPostView('boardSub1', post)">
+                <div class="post-title">{{ post.title }}</div>
+                <div class="post-date">{{ post.date }}</div>
+              </div>
+            </div>
+            <div class="search-bar">
+              <input type="text" v-model="searchQuery.boardSub1" placeholder="검색" @keydown.enter="searchPosts('boardSub1')">
+              <button class="search-submit" @click="searchPosts('boardSub1')">입력</button>
+            </div>
+            <div class="pagination">
+              <button @click="boardPgPr('boardSub1')" :disabled="currentBoardPage.boardSub1 === 1">Prev</button>
+              <span>{{ currentBoardPage.boardSub1 }} / {{ totalBoardPages.boardSub1 }}</span>
+              <button @click="boardPgNx('boardSub1')" :disabled="currentBoardPage.boardSub1 === totalBoardPages.boardSub1">Next</button>
+            </div>
+          </section>
+        </div>
+        <div v-if="cp === 'boardSub2'" class="page">
+          <section id="boardSub2" ref="boardSub2">
+            <div class="board-header">
+              <h1>Event Board</h1>
+              <div class="filter-group">
+                <button :class="{'active': selectedFilter.boardSub2==='Newest'}" @click="boardFltCh('boardSub2','Newest')">Newest</button>
+                <button :class="{'active': selectedFilter.boardSub2==='Oldest'}" @click="boardFltCh('boardSub2','Oldest')">Oldest</button>
+              </div>
+            </div>
+            <div class="board-list">
+              <div v-if="pagedBoard.boardSub2.length === 0" style="text-align: center; padding: 20px; color: #fff;">No Post</div>
+              <div v-for="post in pagedBoard.boardSub2" :key="post.id" class="board-item" @click="openPostView('boardSub2', post)">
+                <div class="post-title">{{ post.title }}</div>
+                <div class="post-date">{{ post.date }}</div>
+              </div>
+            </div>
+            <div class="search-bar">
+              <input type="text" v-model="searchQuery.boardSub2" placeholder="검색" @keydown.enter="searchPosts('boardSub2')">
+              <button class="search-submit" @click="searchPosts('boardSub2')">입력</button>
+            </div>
+            <div class="pagination">
+              <button @click="boardPgPr('boardSub2')" :disabled="currentBoardPage.boardSub2 === 1">Prev</button>
+              <span>{{ currentBoardPage.boardSub2 }} / {{ totalBoardPages.boardSub2 }}</span>
+              <button @click="boardPgNx('boardSub2')" :disabled="currentBoardPage.boardSub2 === totalBoardPages.boardSub2">Next</button>
+            </div>
+          </section>
+        </div>
+        <div v-if="cp === 'boardSub3'" class="page">
+          <section id="boardSub3" ref="boardSub3">
+            <div class="board-header">
+              <h1>Movie Discussion Board</h1>
+            </div>
+            <div class="board-list board-discussion">
+              <div v-if="pagedBoard.boardSub3.length === 0" style="text-align: center; padding: 20px; color: #fff;">No Discussion</div>
+              <div v-for="post in pagedBoard.boardSub3" :key="post.id" class="board-item" @click="openPostView('boardSub3', post)">
+                <div class="post-title">{{ post.title }}</div>
+                <div class="post-date">{{ post.createdAt }}</div>
+              </div>
+            </div>
+            <div class="search-bar">
+              <input type="text" v-model="searchQuery.boardSub3" placeholder="검색" @keydown.enter="searchPosts('boardSub3')">
+              <button class="search-submit" @click="searchPosts('boardSub3')">입력</button>
+            </div>
+            <div class="pagination">
+              <button @click="boardPgPr('boardSub3')" :disabled="currentBoardPage.boardSub3 === 1">Prev</button>
+              <span>{{ currentBoardPage.boardSub3 }} / {{ totalBoardPages.boardSub3 }}</span>
+              <button @click="boardPgNx('boardSub3')" :disabled="currentBoardPage.boardSub3 === totalBoardPages.boardSub3">Next</button>
+            </div>
+          </section>
+        </div>
+      </div>
+      <!-- Chat Button and Window -->
+      <div id="chat-button" @click="toggleChatWindow">
+        <div v-if="hasUnreadMessages" class="unread-dot"></div>
+        <img src="./liveHelp.png" />
+      </div>
+      <div id="chat-window" v-if="showChatWindow">
+        <div class="chat-header">
+          <h3>Live Support</h3>
+          <button class="closeChat" @click="closeChatWindow">X</button>
+        </div>
+        <div class="chat-messages" ref="chatMessages">
+          <div v-for="(message, index) in chatMessages" :key="index" :class="message.is_admin ? 'admin-message' : 'user-message'">
+            <div class="message-text">{{ message.message_text }}</div>
+            <div class="message-status">{{ getMessageStatus(message) }}</div>
+            <div v-if="isAutoEndMessage(message)" class="auto-end-buttons">
+              <button @click="sendResponse('O')">O</button>
+              <button @click="sendResponse('X')">X</button>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input">
+          <input type="text" v-model="newMessage" @keydown.enter="sendMessage" placeholder="Type your message..." />
+          <button @click="sendMessage">Send</button>
+        </div>
+      </div>
+    </div>
+    <div id="post-view-modal" v-if="showPostView" @click.self="closePostView">
+      <div class="post-view-content">
+        <div class="post-view-header">
+          <h2>{{ activePost.title }}</h2>
+          <button class="close-post-view" @click="closePostView">X</button>
+        </div>
+        <div v-if="activeBoard==='boardSub1' || activeBoard==='boardSub2' || activeBoard==='listSub1'">
+          <div class="post-date">{{ activePost.date }}</div>
+          <div class="post-body" style="margin-top: 1.2rem; white-space: pre-line; border-left: solid 2px #fff; border-right: solid 2px #fff; padding: 0 1rem;">{{ activePost.content }}</div>
+        </div>
+        <div v-else-if="activeBoard==='boardSub3'">
+          <div class="post-date">{{ activePost.createdAt }}</div>
+          <div class="post-body" style="white-space: pre-line; margin-top: 1.2rem;">{{ activePost.content }}</div>
+          <div class="comment-section" style="white-space: pre-line;">
+            <h3>Comments</h3>
+            <div class="comment" v-for="comm in topLevelComments" :key="comm.id">
+              <strong>{{ comm.author }}:</strong> {{ comm.comment_text }}
+              <button @click="showReplyInput(comm.id)">Reply</button>
+              <div class="replies">
+                <div v-for="reply in getReplies(comm.id)" :key="reply.id" class="reply">
+                  <strong>{{ reply.author }}:</strong> {{ reply.comment_text }}
+                </div>
+              </div>
+              <div v-if="replyingTo === comm.id" class="reply-input">
+                <input type="text" v-model="newReply" @keydown.enter="submitReply(comm.id)" placeholder="Reply">
+                <button @click="submitReply(comm.id)">Send</button>
+              </div>
+            </div>
+          </div>
+          <div class="comment-input">
+            <input type="text" v-model="newComment" @keydown.enter="submitComment" placeholder="댓글 입력">
+            <button @click="submitComment">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="movie-detail-modal" v-if="showMovieDetail" @click.self="closeMovieDetail">
+      <div class="post-view-content">
+        <div class="post-view-header">
+          <h2>{{ activeMovie.title }}</h2>
+          <button class="close-post-view" @click="closeMovieDetail">X</button>
+        </div>
+        <div class="upper-section">
+          <div class="movie-poster-container">
+            <img :src="getMovieImageUrl()" alt="Movie Poster" class="movie-poster" />
+          </div>
+          <div class="movie-info-container">
+            <p v-if="cp !== 'listSub2'" class="movie-info-item"><strong>Rating:</strong> {{ activeMovie.rating }}</p>
+            <p v-if="cp !== 'listSub2'" class="movie-info-item"><strong>Award Date:</strong> {{ activeMovie.award_date }}</p>
+            <p v-if="cp !== 'listSub2'" class="movie-info-item"><strong>Short Description:</strong> {{ activeMovie.short_description }}</p>
+            <p v-if="cp === 'listSub2'" class="movie-info-item"><strong>Created At:</strong> {{ formatDate(activeMovie.created_at) }}</p>
+            <p v-if="cp === 'listSub2'" class="movie-info-item"><strong>View:</strong> {{ activeMovie.views }}</p>
+          </div>
+        </div>
+        <hr class="section-divider" />
+        <div class="lower-section">
+          <!-- 수정된 슬라이더 부분 -->
+          <div class="still-slider-container" v-if="activeMovie.still_cuts && activeMovie.still_cuts.length > 0">
+            <div class="swiper-container still-slider">
+              <div class="swiper-wrapper">
+                <div v-for="(still, index) in activeMovie.still_cuts" :key="'still-' + index" class="swiper-slide">
+                  <img :src="still" alt="Movie Still" />
+                </div>
+              </div>
+              <div class="swiper-button-next still-slider-next"></div>
+              <div class="swiper-button-prev still-slider-prev"></div>
+              <div class="swiper-pagination still-slider-pagination"></div>
+            </div>
+          </div>
+          <div class="post-body" style=" line-height: 1.68rem; padding: 0 1rem 0 1rem;border-left: solid 2px #fff;border-right: solid 2px #fff;margin: 4rem auto;white-space: pre-line;max-width: 1200px;">{{ activeMovie.description }}</div>
+        </div>
+      </div>
+    </div>
+    <div v-if="showNomineeDetail" id="nominee-detail-modal">
+      <div class="post-view-content">
+        <div class="post-view-header">
+          <h2>{{ activeNominee.movie_title }}</h2>
+          <button class="close-post-view" @click="closeNomineeDetail">X</button>
+        </div>
+        <div class="upper-section">
+          <div class="movie-poster-container">
+            <img :src="activeNominee.poster_url" alt="Movie Poster" class="movie-poster" />
+          </div>
+          <div class="movie-info-container">
+            <div class="movie-info-item">
+              <strong>Award Category:</strong> {{ activeNominee.award_category }}
+            </div>
+            <div class="movie-info-item">
+              <strong>Rating:</strong> {{ activeNominee.rating }}
+            </div>
+            <div class="movie-info-item">
+              <strong>Current Rank:</strong> {{ getNomineeRank(activeNominee) }}
+            </div>
+            <div class="movie-info-item">
+              <strong>Rate Vote</strong>
+              <div class="vote-slider-container">
+                <input type="range" min="1" max="10" step="1" v-model="voteRating" class="vote-slider" @input="updateSliderBackground">
+                <div class="vote-rating-text">{{ voteRating }}</div>
+              </div>
+              <button @click="submitVote" style="width: 300px;; padding: 5px 10px; background: #e90000; color: #fff; border: solid 2px #fff; cursor: pointer;">Submit Vote</button>
+                <p v-if="voteMessage" class="vote_message">{{ voteMessage }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="section-divider"></div>
+        <div class="lower-section">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+    function adjustBannerPosition() {
+      const footer = document.querySelector('.custom-footer');
+      const leftSidebanner = document.getElementById('left-sidebanner');
+      const rightSidebanner = document.getElementById('right-sidebanner');
+      const footerRect = footer.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+  
+      if (footerRect.top < windowHeight) {
+        const overlap = windowHeight - footerRect.top;
+        leftSidebanner.style.bottom = `${overlap+260}px`;
+        rightSidebanner.style.bottom = `${(overlap+260)}px`;
+      } else {
+        leftSidebanner.style.bottom = 'max(20vh,10rem)';
+        rightSidebanner.style.bottom = 'max(20vh,10rem)';
+      }
+    }
+  
+    window.addEventListener('scroll', adjustBannerPosition);
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92643053be32bffe',t:'MTc0Mjk2NjMyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild}});</script>
