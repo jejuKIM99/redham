@@ -1,30 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-7KNRXLZGDH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-7KNRXLZGDH');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7KNRXLZGDH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7KNRXLZGDH');
+  </script>
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Red Line Awards</title>
-  <link rel="icon" href="./favicon.ico">
+  <!-- 기본 SEO 메타 태그 -->
+  <title>Red Line Awards - Movie Awards Blog</title>
+  <meta name="description" content="Red Line Awards is a movie awards blog that introduces a wide range of films, including older movies, and provides fair evaluations and a user-friendly experience." />
+  <meta name="keywords" content="movie awards, film blog, movie recommendations, movie of the month, movie of the year" />
+  <!-- Open Graph 태그 -->
+  <meta property="og:title" content="Red Line Awards - Movie Awards Blog" />
+  <meta property="og:description" content="Discover award-winning movies and recommendations on Red Line Awards." />
+  <meta property="og:image" content="https://redlineawards.vercel.app/logo.png" />
+  <meta property="og:url" content="https://redlineawards.vercel.app/" />
+  <meta property="og:type" content="website" />
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://redlineawards.vercel.app/" />
+  <link rel="icon" href="./favicon.ico" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css" rel="stylesheet" />
-  <link href="https://fonts.cdnfonts.com/css/free-license" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
-  <link href="https://fonts.cdnfonts.com/css/asap-condensed" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/free-license" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet" />
+  <link href="https://fonts.cdnfonts.com/css/asap-condensed" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <!-- Vue CDN -->
+<!-- Vue 3 및 vue-router@4 CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.prod.js"></script>
+
 </head>
 <body ondragstart="return false" ondrop="return false" onselectstart="return false">
   <div id="app">
@@ -50,10 +64,10 @@
     <div id="main-content">
       <!-- 추가된 사이드 배너 -->
       <div id="left-sidebanner" class="sidebanner">
-        <img :src="leftBannerImage" alt="Left Sidebanner Banner" />
+        <img :src="leftBannerImage" alt="Left Side Banner Advertisement" />
       </div>
       <div id="right-sidebanner" class="sidebanner">
-        <img :src="rightBannerImage" alt="Right Sidebanner Banner" />
+        <img :src="rightBannerImage" alt="Right Side Banner Advertisement" />
       </div>
       <nav id="navbar">
         <div class="nav-container">
@@ -61,7 +75,7 @@
             <button id="nav-toggle" @click="navTog($event)">▼</button>
           </div>
           <div class="nav-center">
-            <div id="nav-logo" @click="chPg('home')"><img class="logo_img" src="./logo.png"></div>
+            <div id="nav-logo" @click="chPg('home')"><img class="logo_img" src="./logo.png" alt="Red Line Awards Logo" /></div>
           </div>
           <div class="nav-right"></div>
         </div>
@@ -112,6 +126,7 @@
       <div id="sidebar-overlay"></div>
       <div id="page-container" :class="{ blurred: showPostView || showMovieDetail }">
         <div v-if="cp === 'home'" class="page">
+          <h1 style="display: none;" >Red Line Awards Home</h1>
           <div id="main-slider" class="swiper-container">
             <div class="swiper-wrapper">
               <div v-for="(image, index) in mainSliderImages" :key="index" class="swiper-slide">
@@ -123,10 +138,10 @@
             <div class="swiper-pagination"></div>
           </div>
           <section id="section1">
-            <div class="section-title">RLA Recommendation</div>
+            <h2 class="section-title">RLA Recommendation</h2>
             <div id="movie-grid" class="movie-grid">
               <div v-for="movie in rlaRecommendations" :key="movie.id" class="movie-poster" @click="showExpanded(movie.id)">
-                <img :src="movie.poster_url" alt="Movie Poster" />
+                <img :src="movie.poster_url" :alt="movie.title + ' Poster'" />
               </div>
             </div>
             <div id="movie-expanded" class="movie-expanded" style="display: none;">
@@ -137,7 +152,7 @@
                     <div class="swiper-container movie-slider">
                       <div class="swiper-wrapper">
                         <div v-for="(still, index) in currentStills" :key="index" class="swiper-slide">
-                          <img :src="still" alt="Movie Still"/>
+                          <img :src="still" :alt="currentMovie.title + ' Still Image ' + (index + 1)" />
                         </div>
                       </div>
                       <div class="swiper-button-next movie-slider-next"></div>
@@ -154,7 +169,7 @@
             </div>
           </section>
           <section id="section2">
-            <div class="section-title">Movie of the Month</div>
+            <h2 class="section-title">Movie of the Month</h2>
             <div class="award-container">
               <div class="award-poster">
                 <div class="award-poster-img"></div>
@@ -163,17 +178,17 @@
                 </div>
               </div>
               <div class="award-description">
-                <h2>수상작 제목</h2>
+                <h3>수상작 제목</h3>
                 <p>이 영화의 설명이 여기에 표시됩니다.</p>
               </div>
             </div>
           </section>
           <section id="section3">
-            <div class="section-title">Movie of the Year</div>
+            <h2 class="section-title">Movie of the Year</h2>
             <div class="award-poster-container">
               <div class="award-poster" @mousemove="handlePosterMouseMove" @mouseleave="handlePosterMouseLeave">
                 <div class="award-banner">
-                    Movie of the Year&nbsp;<span id="award-year"></span>
+                  Movie of the Year&nbsp;<span id="award-year"></span>
                 </div>
               </div>
             </div>
@@ -183,7 +198,7 @@
               <div class="slider-shadow right-shadow"></div>
             </div>
             <div class="award-description">
-              <h2>수상작 제목 (작년)</h2>
+              <h3>수상작 제목 (작년)</h3>
               <p>이 영화의 설명이 여기에 표시됩니다.</p>
             </div>
           </section>
@@ -227,15 +242,15 @@
           </section>
           <footer class="custom-footer">
             <div class="footer-container">
-              <div class="footer-image"><img src="./footer_img1.png" style="width: 100%; filter: drop-shadow(17px 10px 12px #000);"></div>
+              <div class="footer-image"><img src="./footer_img1.png" alt="Red Line Awards Footer Image" style="width: 100%; filter: drop-shadow(17px 10px 12px #000);" /></div>
               <div class="footer-content">
                 <h3>Red Line Awards</h3>
                 <p>Copyright © 2025 redlineawards.co.kr All rights reserved.</p>
                 <p>If you want to contact webmaster for more information, please using Live Support chat or dev center.</p>
                 <ul>
-                  <li><a href="./dev.html" target='_blank' >Dev Center <img src="./devcenter.png"> </a></li>
-                  <li><a href="#" target='_blank' >Official Instagram <img src="./official.png"> </a></li>
-                  <li><a href="./business.html" target='_blank' >Business <img src="./business.png"> </a></li>
+                  <li><a href="./dev.html" target='_blank'>Dev Center <img src="./devcenter.png" alt="Dev Center Icon" /></a></li>
+                  <li><a href="#" target='_blank'>Official Instagram <img src="./official.png" alt="Official Instagram Icon" /></a></li>
+                  <li><a href="./business.html" target='_blank'>Business <img src="./business.png" alt="Business Icon" /></a></li>
                 </ul>
               </div>
             </div>
@@ -243,8 +258,9 @@
         </div>
         <div v-if="cp === 'aboutSub1'" class="page">
           <section id="aboutSub1">
+            <h1>What is RLA</h1>
             <div class="section-wrapper">
-              <div class="section-title">What is R.L.A</div>
+              <h2 class="section-title">What is R.L.A</h2>
               <div class="section-content odd">
                 <div class="text-container">
                   <p><strong>R.L.A stands for Red Line Awards.</strong><br>
@@ -252,15 +268,15 @@
                     We are committed to providing <strong style="color: #e90000;">fair evaluations and a user-friendly experience</strong> to ensure the best possible service for our audience.</p>
                 </div>
                 <div class="image-container">
-                  <img src="./logo.png" alt="섹션 1 이미지" />
+                  <img src="./logo.png" alt="Red Line Awards Logo" />
                 </div>
               </div>
             </div>
             <div class="section-wrapper">
-              <div class="section-title">Awards</div>
+              <h2 class="section-title">Awards</h2>
               <div class="section-content even">
                 <div class="image-container">
-                  <img src="./sec2.jpg" alt="섹션 2 이미지" />
+                  <img src="./sec2.jpg" alt="Awards Section Image" />
                 </div>
                 <div class="text-container">
                   <p>We present<strong> annual and monthly awards.</strong><br>
@@ -271,7 +287,7 @@
               </div>
             </div>
             <div class="section-wrapper">
-              <div class="section-title">Dev Center</div>
+              <h2 class="section-title">Dev Center</h2>
               <div class="section-content odd">
                 <div class="text-container">
                   <p>We operate a<strong> Dev Center</strong> for developers, providing simple code snippets and explanations for key features with each update. While not every function is included, the information is designed to be helpful for development learning.<br>
@@ -279,15 +295,15 @@
                     For further inquiries, please use the<strong> Live Support</strong> feature located at the bottom left of the main page.</p>
                 </div>
                 <div class="image-container">
-                  <img src="./sec3.jpg" alt="섹션 3 이미지" />
+                  <img src="./sec3.jpg" alt="Dev Center Section Image" />
                 </div>
               </div>
             </div>
             <div class="section-wrapper">
-              <div class="section-title">Business Service</div>
+              <h2 class="section-title">Business Service</h2>
               <div class="section-content even">
                 <div class="image-container">
-                  <img src="./sec4.jpg" alt="섹션 4 이미지" />
+                  <img src="./sec4.jpg" alt="Business Service Section Image" />
                 </div>
                 <div class="text-container">
                   <p>We operate a<strong> Business Services</strong> platform for utilizing various advertising options on our site. In addition to banner ads, we offer post advertisement services and more.<br>
@@ -300,6 +316,7 @@
         </div>
         <div v-if="cp === 'aboutSub2'" class="page">
           <section id="aboutSub2">
+            <h1>Site Tutorial</h1>
             <div class="tutorial-indicator">
               <ul>
                 <li><a href="#main" @click.prevent="scrollToSection('main')">Main</a></li>
@@ -393,7 +410,7 @@
                 <h1 class="award-title">Nominee List</h1>
                 <div class="refresh-container">
                   <button class="refresh-btn" @click="refreshNominees">
-                    <img src="./refresh-icon.png" alt="Refresh" />
+                    <img src="./refresh-icon.png" alt="Refresh Nominee List" />
                   </button>
                   <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
                 </div>
@@ -421,7 +438,7 @@
             <!-- 새로 추가된 경고 모달 -->
             <div v-if="showWarningModal" class="warning-modal">
               <div class="modal-content">
-                <img src="./logo.png" alt="Logo" class="modal-logo" />
+                <img src="./logo.png" alt="Red Line Awards Logo" class="modal-logo" />
                 <div class="modal-divider"></div>
                 <p class="modal-text">
                   This is a space where you can vote for award-winning films. Each user can vote only once per movie.<br>
@@ -450,7 +467,7 @@
               </div>
             </div>
             <div class="search-bar">
-              <input type="text" v-model="searchQuery.listSub1" placeholder="검색" @keydown.enter="searchPosts('listSub1')">
+              <input type="text" v-model="searchQuery.listSub1" placeholder="검색" @keydown.enter="searchPosts('listSub1')" />
               <button class="search-submit" @click="searchPosts('listSub1')">입력</button>
             </div>
             <div class="pagination">
@@ -481,7 +498,7 @@
               </div>
             </div>
             <div class="search-bar">
-              <input type="text" v-model="searchQuery.listSub2" placeholder="검색" @keydown.enter="searchItems('listSub2')">
+              <input type="text" v-model="searchQuery.listSub2" placeholder="검색" @keydown.enter="searchItems('listSub2')" />
               <button class="search-submit" @click="searchItems('listSub2')">입력</button>
             </div>
             <div class="pagination">
@@ -508,7 +525,7 @@
               </div>
             </div>
             <div class="search-bar">
-              <input type="text" v-model="searchQuery.boardSub1" placeholder="검색" @keydown.enter="searchPosts('boardSub1')">
+              <input type="text" v-model="searchQuery.boardSub1" placeholder="검색" @keydown.enter="searchPosts('boardSub1')" />
               <button class="search-submit" @click="searchPosts('boardSub1')">입력</button>
             </div>
             <div class="pagination">
@@ -535,7 +552,7 @@
               </div>
             </div>
             <div class="search-bar">
-              <input type="text" v-model="searchQuery.boardSub2" placeholder="검색" @keydown.enter="searchPosts('boardSub2')">
+              <input type="text" v-model="searchQuery.boardSub2" placeholder="검색" @keydown.enter="searchPosts('boardSub2')" />
               <button class="search-submit" @click="searchPosts('boardSub2')">입력</button>
             </div>
             <div class="pagination">
@@ -558,7 +575,7 @@
               </div>
             </div>
             <div class="search-bar">
-              <input type="text" v-model="searchQuery.boardSub3" placeholder="검색" @keydown.enter="searchPosts('boardSub3')">
+              <input type="text" v-model="searchQuery.boardSub3" placeholder="검색" @keydown.enter="searchPosts('boardSub3')" />
               <button class="search-submit" @click="searchPosts('boardSub3')">입력</button>
             </div>
             <div class="pagination">
@@ -572,7 +589,7 @@
       <!-- Chat Button and Window -->
       <div id="chat-button" @click="toggleChatWindow">
         <div v-if="hasUnreadMessages" class="unread-dot"></div>
-        <img src="./liveHelp.png" />
+        <img src="./liveHelp.png" alt="Live Support Chat Icon" />
       </div>
       <div id="chat-window" v-if="showChatWindow">
         <div class="chat-header">
@@ -619,13 +636,13 @@
                 </div>
               </div>
               <div v-if="replyingTo === comm.id" class="reply-input">
-                <input type="text" v-model="newReply" @keydown.enter="submitReply(comm.id)" placeholder="Reply">
+                <input type="text" v-model="newReply" @keydown.enter="submitReply(comm.id)" placeholder="Reply" />
                 <button @click="submitReply(comm.id)">Send</button>
               </div>
             </div>
           </div>
           <div class="comment-input">
-            <input type="text" v-model="newComment" @keydown.enter="submitComment" placeholder="댓글 입력">
+            <input type="text" v-model="newComment" @keydown.enter="submitComment" placeholder="댓글 입력" />
             <button @click="submitComment">Send</button>
           </div>
         </div>
@@ -639,7 +656,7 @@
         </div>
         <div class="upper-section">
           <div class="movie-poster-container">
-            <img :src="getMovieImageUrl()" alt="Movie Poster" class="movie-poster" />
+            <img :src="getMovieImageUrl()" :alt="activeMovie.title + ' Poster'" class="movie-poster" />
           </div>
           <div class="movie-info-container">
             <p v-if="cp !== 'listSub2'" class="movie-info-item"><strong>Rating:</strong> {{ activeMovie.rating }}</p>
@@ -656,7 +673,7 @@
             <div class="swiper-container still-slider">
               <div class="swiper-wrapper">
                 <div v-for="(still, index) in activeMovie.still_cuts" :key="'still-' + index" class="swiper-slide">
-                  <img :src="still" alt="Movie Still" />
+                  <img :src="still" :alt="activeMovie.title + ' Still Image ' + (index + 1)" />
                 </div>
               </div>
               <div class="swiper-button-next still-slider-next"></div>
@@ -664,7 +681,7 @@
               <div class="swiper-pagination still-slider-pagination"></div>
             </div>
           </div>
-          <div class="post-body" style=" line-height: 1.68rem; padding: 0 1rem 0 1rem;border-left: solid 2px #fff;border-right: solid 2px #fff;margin: 4rem auto;white-space: pre-line;max-width: 1200px;">{{ activeMovie.description }}</div>
+          <div class="post-body" style="line-height: 1.68rem; padding: 0 1rem 0 1rem; border-left: solid 2px #fff; border-right: solid 2px #fff; margin: 4rem auto; white-space: pre-line; max-width: 1200px;">{{ activeMovie.description }}</div>
         </div>
       </div>
     </div>
@@ -676,7 +693,7 @@
         </div>
         <div class="upper-section">
           <div class="movie-poster-container">
-            <img :src="activeNominee.poster_url" alt="Movie Poster" class="movie-poster" />
+            <img :src="activeNominee.poster_url" :alt="activeNominee.movie_title + ' Poster'" class="movie-poster" />
           </div>
           <div class="movie-info-container">
             <div class="movie-info-item">
@@ -691,22 +708,20 @@
             <div class="movie-info-item">
               <strong>Rate Vote</strong>
               <div class="vote-slider-container">
-                <input type="range" min="1" max="10" step="1" v-model="voteRating" class="vote-slider" @input="updateSliderBackground">
+                <input type="range" min="1" max="10" step="1" v-model="voteRating" class="vote-slider" @input="updateSliderBackground" />
                 <div class="vote-rating-text">{{ voteRating }}</div>
               </div>
-              <button @click="submitVote" style="width: 300px;; padding: 5px 10px; background: #e90000; color: #fff; border: solid 2px #fff; cursor: pointer;">Submit Vote</button>
-                <p v-if="voteMessage" class="vote_message">{{ voteMessage }}</p>
+              <button @click="submitVote" style="width: 300px; padding: 5px 10px; background: #e90000; color: #fff; border: solid 2px #fff; cursor: pointer;">Submit Vote</button>
+              <p v-if="voteMessage" class="vote_message">{{ voteMessage }}</p>
             </div>
           </div>
         </div>
         <div class="section-divider"></div>
         <div class="lower-section">
-          </div>
         </div>
       </div>
     </div>
   </div>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
   <script src="app.js"></script>
   <script>
@@ -716,7 +731,7 @@
       const rightSidebanner = document.getElementById('right-sidebanner');
       const footerRect = footer.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-  
+
       if (footerRect.top < windowHeight) {
         const overlap = windowHeight - footerRect.top;
         leftSidebanner.style.bottom = `${overlap+260}px`;
@@ -726,7 +741,8 @@
         rightSidebanner.style.bottom = 'max(20vh,10rem)';
       }
     }
-  
+
     window.addEventListener('scroll', adjustBannerPosition);
   </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92643053be32bffe',t:'MTc0Mjk2NjMyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild}});</script>
+ </body>
+</html>

@@ -1,5 +1,33 @@
 const { createApp } = Vue;
-createApp({
+const { createRouter, createWebHistory } = VueRouter;
+
+// 라우터 설정 (Vue 3 방식)
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/', component: { template: '<div>Home Page</div>' }, meta: { title: 'Red Line Awards Home', description: 'Discover award-winning movies and recommendations on Red Line Awards.' } },
+    { path: '/about/sub1', component: { template: '<div>About Sub1</div>' }, meta: { title: 'What is RLA', description: 'Learn about Red Line Awards, a movie awards blog introducing a wide range of films.' } },
+    { path: '/about/sub2', component: { template: '<div>About Sub2</div>' }, meta: { title: 'Site Tutorial', description: 'A tutorial on how to navigate and use the Red Line Awards website.' } },
+    { path: '/award/sub1', component: { template: '<div>Award Sub1</div>' }, meta: { title: 'Movie of the Month', description: 'Explore monthly award-winning movies on Red Line Awards.' } },
+    { path: '/award/sub2', component: { template: '<div>Award Sub2</div>' }, meta: { title: 'Movie of the Year', description: 'Discover yearly award-winning movies on Red Line Awards.' } },
+    { path: '/award/sub3', component: { template: '<div>Award Sub3</div>' }, meta: { title: 'Nominee List', description: 'Vote for your favorite movie nominees on Red Line Awards.' } },
+    { path: '/list/sub1', component: { template: '<div>List Sub1</div>' }, meta: { title: 'Soundtrack', description: 'Check out movie soundtracks featured on Red Line Awards.' } },
+    { path: '/list/sub2', component: { template: '<div>List Sub2</div>' }, meta: { title: 'Master\'s Pick', description: 'Explore curated movie recommendations by the Master on Red Line Awards.' } },
+    { path: '/board/sub1', component: { template: '<div>Board Sub1</div>' }, meta: { title: 'Notices Board', description: 'Stay updated with the latest notices on Red Line Awards.' } },
+    { path: '/board/sub2', component: { template: '<div>Board Sub2</div>' }, meta: { title: 'Event Board', description: 'Find out about events on Red Line Awards.' } },
+    { path: '/board/sub3', component: { template: '<div>Board Sub3</div>' }, meta: { title: 'Movie Discussion', description: 'Join movie discussions on Red Line Awards.' } },
+  ]
+});
+// 메타 태그 수동 관리
+router.beforeEach((to, from, next) => {
+  document.title = to.meta.title || 'Red Line Awards - Movie Awards Blog';
+  const metaDescription = document.querySelector('meta[name="description"]');
+  if (metaDescription) {
+    metaDescription.setAttribute('content', to.meta.description || 'Red Line Awards is a movie awards blog that introduces a wide range of films, including older movies, and provides fair evaluations and a user-friendly experience.');
+  }
+  next();
+});
+const app = createApp({
   data() {
     return {
       ld: 0,
@@ -73,7 +101,6 @@ createApp({
       newMessage: '',
       chatRealtimeChannel: null,
       hasUnreadMessages: false,
-      /* 추가된 사이드 배너 데이터 */
       leftBannerImage: '',
       rightBannerImage: '',
       showNomineeDetail: false,
@@ -139,11 +166,19 @@ createApp({
     }
   },
   methods: {
+    getMetaTitle() {
+      const route = router.options.routes.find(r => r.path === this.$route.path);
+      return route ? route.meta.title : 'Red Line Awards - Movie Awards Blog';
+    },
+    getMetaDescription() {
+      const route = router.options.routes.find(r => r.path === this.$route.path);
+      return route ? route.meta.description : 'Red Line Awards is a movie awards blog that introduces a wide range of films, including older movies, and provides fair evaluations and a user-friendly experience.';
+    },
     getMovieImageUrl() {
       if (this.cp === 'listSub2') {
-        return this.activeMovie.image;  // Master's Pick의 경우 image 사용
+        return this.activeMovie.image;
       } else {
-        return this.activeMovie.poster_url;  // 다른 페이지의 경우 poster_url 사용
+        return this.activeMovie.poster_url;
       }
     },
     formatDate(dateString) {
@@ -179,7 +214,7 @@ createApp({
             await this.fetchNowPlayingMovies();
             await this.fetchMovieAwards();
             await this.fetchNominees();
-            await this.fetchSideBanners(); // 사이드 배너 데이터 가져오기 추가
+            await this.fetchSideBanners();
             this.isMainContentLoaded = true;
           }
           this.$nextTick(() => { this.initHM(); });
@@ -281,30 +316,33 @@ createApp({
         }
       } });
     },
-    chPg(newPg) {
+    chPg(path) {
       this.clsNav();
-      if (this.cp === newPg) return;
+      const newCp = path.replace('/', '').replace('/', '');
+      if (this.cp === newCp) return;
       gsap.to("#page-container", {
         duration: 0.5,
         scale: 0,
         transformOrigin: "center center",
         ease: "power1.in",
         onComplete: () => {
-          this.cp = newPg;
-          this.$nextTick(() => {
-            if (this.cp === 'home') {
-              this.initHM();
-            }
-            gsap.fromTo("#page-container", {
-              scale: 0,
-              transformOrigin: "center center"
-            }, {
-              duration: 0.5,
-              scale: 1,
-              ease: "power1.out"
+          this.$router.push(path).then(() => {
+            this.cp = newCp;
+            this.$nextTick(() => {
+              if (this.cp === 'home') {
+                this.initHM();
+              }
+              gsap.fromTo("#page-container", {
+                scale: 0,
+                transformOrigin: "center center"
+              }, {
+                duration: 0.5,
+                scale: 1,
+                ease: "power1.out"
+              });
+              window.scrollTo(0, 0);
+              this.resetSidebannerPosition();
             });
-            window.scrollTo(0, 0);
-            this.resetSidebannerPosition(); // 사이드 배너 위치 초기화
           });
         }
       });
@@ -686,7 +724,7 @@ createApp({
             section2PosterImg.style.backgroundSize = 'cover';
             section2PosterImg.style.backgroundPosition = 'center';
           }
-          const section2Title = document.querySelector('#section2 .award-description h2');
+          const section2Title = document.querySelector('#section2 .award-description h3');
           if (section2Title) {
             section2Title.textContent = latestMonth.movie_title;
           }
@@ -704,7 +742,7 @@ createApp({
             section3AwardPoster.style.backgroundSize = 'cover';
             section3AwardPoster.style.backgroundPosition = 'center';
           }
-          const section3Title = document.querySelector('#section3 .award-description h2');
+          const section3Title = document.querySelector('#section3 .award-description h3');
           if (section3Title) {
             section3Title.textContent = latestYear.movie_title;
           }
@@ -746,7 +784,6 @@ createApp({
         this.awardData.awardSub3 = nominees.map(item => ({ ...item, title: item.movie_title }));
       }
     },
-    /* 추가된 사이드 배너 데이터 가져오기 메서드 */
     async fetchSideBanners() {
       let { data, error } = await this.supabase.from('sidebanner').select('sidebanner_image');
       if (error) {
@@ -814,12 +851,11 @@ createApp({
       const section = document.getElementById(sectionId);
       if (section) {
         window.scrollTo({
-          top: section.offsetTop - 60, // Adjust for fixed header
+          top: section.offsetTop - 60,
           behavior: 'smooth'
         });
       }
     },
-    // Chat Functionality Methods
     async toggleChatWindow() {
       if (this.showChatWindow) {
         this.closeChatWindow();
@@ -938,12 +974,12 @@ createApp({
     },
     async openNomineeDetail(nominee) {
       this.activeNominee = nominee;
-      this.voteRating = 5; // 슬라이더 초기값 설정
+      this.voteRating = 5;
       this.showNomineeDetail = true;
       document.body.style.overflow = "hidden";
       this.$nextTick(() => {
         gsap.fromTo("#nominee-detail-modal", { top: "100%" }, { duration: 0.5, top: "44px", ease: "power2.out" });
-        this.updateSliderBackground(); // 모달이 열릴 때 초기 배경 설정
+        this.updateSliderBackground();
       });
     },
     closeNomineeDetail() {
@@ -962,7 +998,6 @@ createApp({
       const ipAddress = this.clientIP;
       const rating = this.voteRating;
 
-      // IP로 이미 투표했는지 확인
       let { data: existingVotes, error: fetchError } = await this.supabase
         .from('nominee_votes')
         .select('*')
@@ -980,7 +1015,6 @@ createApp({
         return;
       }
 
-      // 새 투표 삽입 (평균 계산은 트리거에 맡김)
       let { data, error } = await this.supabase
         .from('nominee_votes')
         .insert([{ nominee_id: nomineeId, ip_address: ipAddress, rating: rating }])
@@ -991,7 +1025,6 @@ createApp({
         this.voteMessage = "Error submitting vote.";
       } else {
         this.voteMessage = "Vote submitted successfully.";
-        // 트리거가 rating을 업데이트하므로, 최신 데이터를 다시 가져옴
         let { data: updatedNominee, error: fetchError } = await this.supabase
           .from('nominees')
           .select('rating')
@@ -1003,8 +1036,8 @@ createApp({
       }
     },
     async refreshNominees() {
-      await this.fetchNominees(); // 데이터 새로고침
-      this.lastRefreshedTime = new Date().toLocaleTimeString(); // 새로고침 시간 업데이트
+      await this.fetchNominees();
+      this.lastRefreshedTime = new Date().toLocaleTimeString();
     },
     setupNomineesRealtime() {
       this.nomineesChannel = this.supabase
@@ -1086,4 +1119,6 @@ createApp({
       this.supabase.removeChannel(this.nomineesChannel);
     }
   }
-}).mount("#app");
+});
+app.use(router);
+app.mount("#app");
