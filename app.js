@@ -688,7 +688,8 @@ const app = createApp({
           description: item.content,
           image: item.poster_url,
           views: item.views,
-          created_at: item.created_at
+          created_at: item.created_at,
+          is_ad: item.is_ad // is_ad 추가
         }));
       }
     },
