@@ -35,10 +35,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <!-- Vue CDN -->
-<!-- Vue 3 및 vue-router@4 CDN -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.prod.js"></script>
-
 </head>
 <body ondragstart="return false" ondrop="return false" onselectstart="return false">
   <div id="app">
@@ -142,6 +140,8 @@
             <div id="movie-grid" class="movie-grid">
               <div v-for="movie in rlaRecommendations" :key="movie.id" class="movie-poster" @click="showExpanded(movie.id)">
                 <img :src="movie.poster_url" :alt="movie.title + ' Poster'" />
+                <!-- 추가된 AD 뱃지 -->
+                <div v-if="movie.is_ad" class="ad-badge">AD</div>
               </div>
             </div>
             <div id="movie-expanded" class="movie-expanded" style="display: none;">
@@ -178,8 +178,8 @@
                 </div>
               </div>
               <div class="award-description">
-                <h3>수상작 제목</h3>
-                <p>이 영화의 설명이 여기에 표시됩니다.</p>
+                <h3 style="font-size: 26px;">수상작 제목</h3>
+                <p>이 영화의 설명이 여기에 표시됩니다。</p>
               </div>
             </div>
           </section>
@@ -198,8 +198,8 @@
               <div class="slider-shadow right-shadow"></div>
             </div>
             <div class="award-description">
-              <h3>수상작 제목 (작년)</h3>
-              <p>이 영화의 설명이 여기에 표시됩니다.</p>
+              <h3 style="font-size: 26px;">수상작 제목 (작년)</h3>
+              <p>이 영화의 설명이 여기에 표시됩니다。</p>
             </div>
           </section>
           <section id="section4">
@@ -258,7 +258,7 @@
         </div>
         <div v-if="cp === 'aboutSub1'" class="page">
           <section id="aboutSub1">
-            <h1>What is RLA</h1>
+            <h1 style="display: none;">What is RLA</h1>
             <div class="section-wrapper">
               <h2 class="section-title">What is R.L.A</h2>
               <div class="section-content odd">
@@ -316,7 +316,7 @@
         </div>
         <div v-if="cp === 'aboutSub2'" class="page">
           <section id="aboutSub2">
-            <h1>Site Tutorial</h1>
+            <h1 style="display: none;">Site Tutorial</h1>
             <div class="tutorial-indicator">
               <ul>
                 <li><a href="#main" @click.prevent="scrollToSection('main')">Main</a></li>
@@ -491,6 +491,8 @@
               <div v-if="pagedItems.listSub2.length === 0" style="text-align: center; padding: 20px; color: #fff;">No Post</div>
               <div v-for="item in pagedItems.listSub2" :key="item.id" class="movie-item" @click="openMovieDetail(item)">
                 <div class="poster" :style="{ backgroundImage: 'url(' + item.image + ')' }"></div>
+                <!-- 추가된 AD 뱃지 -->
+                <div v-if="item.is_ad" class="ad-badge">AD</div>
                 <div class="movie-info">
                   <span class="movie-title">{{ item.title }}</span>
                   <span class="movie-views">{{ item.views }} views</span>
