@@ -492,7 +492,7 @@
               <div v-for="item in pagedItems.listSub2" :key="item.id" class="movie-item" @click="openMovieDetail(item)">
                 <div class="poster" :style="{ backgroundImage: 'url(' + item.image + ')' }"></div>
                 <!-- 추가된 AD 뱃지 -->
-                <div v-if="item.is_ad" class="ad-badge">AD</div>
+                <div v-if="item.is_ad" class="ad-badge" style=" position: relative; bottom: 30px; left: 172px; width: 36px; background: #808080e8;">AD</div>
                 <div class="movie-info">
                   <span class="movie-title">{{ item.title }}</span>
                   <span class="movie-views">{{ item.views }} views</span>
