@@ -970,6 +970,7 @@ const app = createApp({
         content = content.replace(/\[.*?\]/g, match => `<span class="highlightedWord">${match}</span>`);
         content = content.replace(/\_.*?\_/g, match => `<span class="highlightedInfo">${match}</span>`);
         content = content.replace(/\「.*?\」/g, match => `<span class="highlightedImp">${match}</span>`);
+        content = content.replace(/\$hr\$/g, '<hr>');
         postBody.innerHTML = content;
       }
     },
