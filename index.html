@@ -11,7 +11,7 @@
   </script>
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <!-- 기본 SEO 메타 태그 -->
   <title>Red Line Awards - Movie Awards Blog</title>
   <meta name="description" content="Red Line Awards is a movie awards blog that introduces a wide range of films, including older movies, and provides fair evaluations and a user-friendly experience." />
@@ -247,7 +247,7 @@
                 <h3>Red Line Awards</h3>
                 <p>Copyright © 2025 redlineawards.co.kr All rights reserved.</p>
                 <p>If you want to contact webmaster for more information, please using Live Support chat or dev center.</p>
-                <p>Current Version: v0.1.0-beta</p>
+                <p>Current Version: 0.1.0v-beta</p>
                 <ul>
                   <li><a href="./dev.html" target='_blank'>Dev Center <img src="./devcenter.png" alt="Dev Center Icon" /></a></li>
                   <li><a href="#" target='_blank'>Official Instagram <img src="./official.png" alt="Official Instagram Icon" /></a></li>
@@ -524,7 +524,7 @@
               <div v-if="pagedBoard.boardSub1.length === 0" style="text-align: center; padding: 20px; color: #fff;">No Post</div>
               <div v-for="post in pagedBoard.boardSub1" :key="post.id" class="board-item" @click="openPostView('boardSub1', post)">
                 <div class="post-title">{{ post.title }}</div>
-                <div class="post-date">{{ post.date }}</div>
+                <div class="post-date">{{ formatDate(post.date) }}</div>
               </div>
             </div>
             <div class="search-bar">
@@ -622,7 +622,7 @@
           <button class="close-post-view" @click="closePostView">X</button>
         </div>
         <div v-if="activeBoard==='boardSub1' || activeBoard==='boardSub2' || activeBoard==='listSub1'">
-          <div class="post-date">{{ activePost.date }}</div>
+          <div class="post-date">{{ formatDate(activePost.date) }}</div>
           <div class="post-body" style="margin-top: 1.2rem; white-space: pre-line; border-left: solid 2px #fff; border-right: solid 2px #fff; padding: 0 1rem;">{{ activePost.content }}</div>
         </div>
         <div v-else-if="activeBoard==='boardSub3'">
