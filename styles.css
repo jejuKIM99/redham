@@ -79,7 +79,7 @@ section { max-width: 1040px; width: 100%; margin: 20px auto; padding: 20px; posi
 .movie-info { color: #fff; flex: 1 1 50%; padding: 10px; }
 .movie-slider { border-radius: 20px; width: 100%; height: auto; overflow: hidden; position: relative; background: #222; }
 .movie-slider .swiper-slide img { width: 100%; height: auto; }
-.award-wrapper { max-width: 1200px; width: 100%; margin: 20px auto; padding: 20px; box-sizing: border-box; }
+.award-wrapper { max-width: 1040px; width: 100%; margin: 20px auto; padding: 20px; box-sizing: border-box; }
 .award-header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 2px solid #fff; box-sizing: border-box; }
 .award-title { font-size: min(5vw, 2rem); }
 .filter-group { margin-left: 0.4rem; display: flex; gap: 0.6rem; }
