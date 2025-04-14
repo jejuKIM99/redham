@@ -219,7 +219,7 @@ section { max-width: 1040px; width: 100%; margin: 20px auto; padding: 20px; posi
 .sidebanner { position: fixed; bottom: 20vh; width: 200px; height: 600px; z-index: 100; transition: bottom 0.05s ease; }
 #left-sidebanner { left: 20px;}
 #right-sidebanner { right: 20px; }
-@media screen and (max-width: 1650px) {.sidebanner { display: none;}}
+@media screen and (max-width: 1500px) {.sidebanner { display: none;}}
 #aboutSub1 { padding: 20px;}
 .section-wrapper { position: relative; margin-bottom: 100px; }
 .section-title { letter-spacing: 2px; display: flex; align-items: center; justify-content: center; border: solid 2px #fff; border-radius: 6px; padding: 6px; font-size: 1.5rem; font-weight: bold; color: #fff; background-color: #e90000; }
