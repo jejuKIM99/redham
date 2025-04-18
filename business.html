@@ -154,7 +154,8 @@
 
         /* Section Styles */
         .banner-section,
-        .post-section {
+        .post-section,
+        .editor-section {
             max-width: 500px;
             margin: 0 1.4rem 1.4rem 1.4rem;
             padding: 10px;
@@ -180,7 +181,8 @@
             margin-bottom: 20px;
         }
 
-        h3 {display: flex;
+        h3 {
+            display: flex;
             justify-content: center;
             border: solid 2px #fff;
             border-radius: 5px;
@@ -241,6 +243,109 @@
         li {
             font-weight: bold;
             margin-bottom: 20px;
+        }
+
+        /* Editor Section Styles */
+        .editor-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .image-wrapper {
+            width: 70%;
+            position: relative;
+            height: 270px;
+        }
+
+        .text-wrapper {
+            width: 55%;
+        }
+
+        .editor-img {
+            position: absolute;
+            width: 300px;
+            height: 200px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, z-index 0.3s ease;
+            z-index: 1;
+        }
+
+        .editor-img:nth-child(1) {
+            left: 0;
+            top: 0;
+            transform: rotate(-10deg);
+        }
+
+        .editor-img:nth-child(2) {
+            left: 50px;
+            top: 20px;
+            transform: rotate(-5deg);
+        }
+
+        .editor-img:nth-child(3) {
+            left: 100px;
+            top: 40px;
+            transform: rotate(0deg);
+        }
+
+        .editor-img:nth-child(4) {
+            left: 150px;
+            top: 20px;
+            transform: rotate(5deg);
+        }
+
+        .editor-img:nth-child(5) {
+            left: 200px;
+            top: 0;
+            transform: rotate(10deg);
+        }
+
+        .editor-img:hover {
+            z-index: 10;
+        }
+
+        .editor-img:nth-child(1):hover {
+            transform: scale(1.1) rotate(-10deg);
+        }
+
+        .editor-img:nth-child(2):hover {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .editor-img:nth-child(3):hover {
+            transform: scale(1.1) rotate(0deg);
+        }
+
+        .editor-img:nth-child(4):hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .editor-img:nth-child(5):hover {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        @media (max-width: 997px) {
+            .editor-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .image-wrapper, .text-wrapper {
+                width: 100%;
+            }
+
+            .image-wrapper {
+                height: auto;
+            }
+
+            .editor-img {
+                position: static;
+                margin: 10px auto;
+                transform: none !important;
+            }
         }
     </style>
 </head>
@@ -336,8 +441,32 @@
         <!-- Editor Registration Tab -->
         <section id="editor" class="tab-content">
             <h2>Editor Registration</h2>
-            <p>If you wish to register as an editor, please contact the administrator. Detailed registration procedures can be checked via Live Support chat or Dev Center.</p>
+            <div class="editor-section">
+                <div class="image-wrapper">
+                    <img src="business/4.png" alt="Editor Image 1" class="editor-img">
+                    <img src="business/5.png" alt="Editor Image 2" class="editor-img">
+                    <img src="business/3.png" alt="Editor Image 3" class="editor-img">
+                    <img src="business/2.png" alt="Editor Image 4" class="editor-img">
+                    <img src="business/1.png" alt="Editor Image 5" class="editor-img">
+                </div>
+                <div class="text-wrapper">
+                    <p></p>
+                    <p style="border: solid 2px #fff; border-radius: 6px; background-color: #e90000; padding: 4px; text-align: center;"></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <button>Download Form</button>
+                </div>
+            </div>
         </section>
+        <p style=" padding: 6px; text-align: center; max-width: 1000px; color: #747474; font-size: 10px;">
+            * All fees collected from business-related services are reinvested into the continuous improvement and development of the Red Line Awards platform. *
+        </p>
     </main>
 
     <!-- GSAP Library for Animations -->
@@ -403,7 +532,7 @@
                             price: '600$',
                             per: '/post',
                             details: [
-                                '● Each post will be permanently published unless requested otherwise..',
+                                '● Each post will be permanently published unless requested otherwise.',
                                 '● Content is created by the editorial team and published after consultation with the client.',
                                 '● The post creation process may take up to 2 weeks.',
                                 '● Advertisements are displayed on both desktop and mobile devices.',
@@ -415,7 +544,16 @@
                     },
                     editor: {
                         h2: 'Editor Registration',
-                        p: 'Editor registration will be available once the Editor\'s Pick service is launched. For more details on the service schedule, please contact us via Live Support Chat.'
+                        p1: 'By registering as an editor, you gain the authority to review and recommend content on our platform. Approved editors can publish film reviews and commentary in our Editor\'s Pick section. As an editor, you’ll have the opportunity to share your insights and expertise with a wider audience and launch your own content-driven business.',
+                        p2: 'Benefits of Being an Editor',
+                        p3: '● Start your own business by publishing articles in Editor\'s Pick.',
+                        p4: '● Earn rewards based on views and ad placements.',
+                        p5: '● Maintain high-quality content and strong viewership to increase your ad revenue share the following year.',
+                        p6: '● Use our exclusive editor tools to write posts, track performance stats, and analyze ad reliability.',
+                        p7: '● Get direct support through a 1:1 messaging system with the admin team.',
+                        p8: '● All submissions are reviewed by our team before publication to ensure consistent quality and credibility.',
+                        p9: 'If you’re interested in becoming an editor, please download the registration form below and submit it via email. After a review process, we will guide you through the next steps to complete your editor registration.',
+                        button: 'Download Form'
                     }
                 },
                 kr: {
@@ -431,7 +569,7 @@
                                 '● 한 사람이 게재할 수 있는 광고 수에는 제한이 없습니다.',
                                 '● 광고는 모바일 기기에서도 동일하게 표시되어 최대의 광고 효과를 보장합니다.'
                             ],
-                            sub_notice:'하단의 \'양식 다운로드\' 버튼을 눌러 양식을 다운 받아 작성 후 메일로 보내주시면 검토 후 게재됩니다.',
+                            sub_notice: '하단의 \'양식 다운로드\' 버튼을 눌러 양식을 다운 받아 작성 후 메일로 보내주시면 검토 후 게재됩니다.',
                             button: '양식 다운로드'
                         },
                         sideBanner: {
@@ -482,8 +620,17 @@
                         }
                     },
                     editor: {
-                        h2: '에디터등록',
-                        p: '에디터 등록은 이후 Editor\'s Pick 서비스가 오픈 된 이후 활성화될 예정입니다. 자세한 서비스 일정은 Live Support chat을 통해 문의 바랍니다.'
+                        h2: '에디터 등록',
+                        p1: '에디터 등록을 통해 콘텐츠를 검토하고 추천할 수 있는 에디터 권한을 부여받을 수 있습니다.등록된 에디터는 저희 플랫폼의 Editor\'s Pick 섹션에 영화에 대한 논평을 게시할 수 있습니다. 에디터로서 귀하는 전문 지식과 통찰력을 청중과 공유하고, 콘텐츠 기반 비즈니스를 시작할 기회를 얻게 됩니다.',
+                        p2: '에디터 혜택',
+                        p3: '● Editor\'s Pick에 글을 게시하여 나만의 콘텐츠 비즈니스를 시작하세요.',
+                        p4: '● 조회수 및 광고 수익에 따른 보상을 받을 수 있습니다.',
+                        p5: '● 높은 품질과 조회수를 유지할 경우, 다음 해 광고 수익 비율이 상승합니다.',
+                        p6: '● 에디터 전용 프로그램을 통해 편리한 포스트 작성, 수익/조회수 통계, 광고 신뢰도 분석 기능을 제공합니다.',
+                        p7: '● 1:1 문의 기능을 통해 관리자와 직접 소통이 가능합니다.',
+                        p8: '● 에디터가 작성한 글은 R.L.A 팀에서 사전 검토 후 게시되며, 콘텐츠 품질 유지를 지원합니다.',
+                        p9: '에디터 등록에 관심이 있으시다면, 아래 등록 양식을 다운로드하여 이메일로 제출해 주세요. 등록 심사 후 에디터로 활동하실 수 있도록 안내해드리겠습니다.',
+                        button: '양식 다운로드'
                     }
                 }
             };
@@ -557,7 +704,16 @@
 
                 // Editor tab
                 document.querySelector('#editor h2').textContent = data.editor.h2;
-                document.querySelector('#editor p').textContent = data.editor.p;
+                document.querySelector('#editor .text-wrapper p:nth-child(1)').textContent = data.editor.p1;
+                document.querySelector('#editor .text-wrapper p:nth-child(2)').textContent = data.editor.p2;
+                document.querySelector('#editor .text-wrapper p:nth-child(3)').textContent = data.editor.p3;
+                document.querySelector('#editor .text-wrapper p:nth-child(4)').textContent = data.editor.p4;
+                document.querySelector('#editor .text-wrapper p:nth-child(5)').textContent = data.editor.p5;
+                document.querySelector('#editor .text-wrapper p:nth-child(6)').textContent = data.editor.p6;
+                document.querySelector('#editor .text-wrapper p:nth-child(7)').textContent = data.editor.p7;
+                document.querySelector('#editor .text-wrapper p:nth-child(8)').textContent = data.editor.p8;
+                document.querySelector('#editor .text-wrapper p:nth-child(9)').textContent = data.editor.p9;
+                document.querySelector('#editor .text-wrapper button').textContent = data.editor.button;
 
                 // Animate the content
                 gsap.fromTo('.tab-content.active',
@@ -608,6 +764,6 @@
         });
     </script>
     <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'929479be8ccbb04f',t:'MTc0MzQ3MjY0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93212e1a3ba0070d',t:'MTc0NDk0ODAzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 
 </html>
