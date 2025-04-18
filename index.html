@@ -531,7 +531,8 @@
                 <button :class="{'active': selectedFilter.listSub3==='Newest'}" @click="fltCh('listSub3','Newest')">Newest</button>
                 <button :class="{'active': selectedFilter.listSub3==='Oldest'}" @click="fltCh('listSub3','Oldest')">Oldest</button>
                 <button :class="{'active': selectedFilter.listSub3==='Views'}" @click="fltCh('listSub3','Views')">Most Viewed</button>
-                <select v-model="selectedEditor" @change="fltCh('listSub3', selectedFilter.listSub3)">
+                <select style=" font-size: min(2.6vw, 1rem); padding: 1px 1px; font-family: &quot;Righteous&quot;, sans-serif; background: #e90000; border: solid 2px #fff; color: #fff;" 
+                v-model="selectedEditor" @change="fltCh('listSub3', selectedFilter.listSub3)">
                   <option value="">All Editors</option>
                   <option v-for="editor in editors" :key="editor.id" :value="editor.id">{{ editor.name }}</option>
                 </select>
