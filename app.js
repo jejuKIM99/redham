@@ -13,6 +13,7 @@ const router = createRouter({
     { path: '/award/sub3', component: { template: '<div>Award Sub3</div>' }, meta: { title: 'Nominee List', description: 'Vote for your favorite movie nominees on Red Line Awards.' } },
     { path: '/list/sub1', component: { template: '<div>List Sub1</div>' }, meta: { title: 'Soundtrack', description: 'Check out movie soundtracks featured on Red Line Awards.' } },
     { path: '/list/sub2', component: { template: '<div>List Sub2</div>' }, meta: { title: 'Master\'s Pick', description: 'Explore curated movie recommendations by the Master on Red Line Awards.' } },
+    { path: '/list/sub3', component: { template: '<div>List Sub3</div>' }, meta: { title: 'Editor\'s Pick', description: 'Explore curated movie recommendations by the Editors on Red Line Awards.' } },
     { path: '/board/sub1', component: { template: '<div>Board Sub1</div>' }, meta: { title: 'Notices Board', description: 'Stay updated with the latest notices on Red Line Awards.' } },
     { path: '/board/sub2', component: { template: '<div>Board Sub2</div>' }, meta: { title: 'Event Board', description: 'Find out about events on Red Line Awards.' } },
     { path: '/board/sub3', component: { template: '<div>Board Sub3</div>' }, meta: { title: 'Movie Discussion', description: 'Join movie discussions on Red Line Awards.' } },
@@ -62,13 +63,15 @@ const app = createApp({
         boardSub1: 'Newest',
         boardSub2: 'Newest',
         listSub1: 'Newest',
-        listSub2: 'Newest'
+        listSub2: 'Newest',
+        listSub3: 'Newest'
       },
       currentPage: {
         awardSub1: 1,
         awardSub2: 1,
         awardSub3: 1,
-        listSub2: 1
+        listSub2: 1,
+        listSub3: 1
       },
       itemsPerPage: 20,
       awardData: {
@@ -77,11 +80,13 @@ const app = createApp({
         awardSub3: []
       },
       listData: {
-        listSub2: []
+        listSub2: [],
+        listSub3: []
       },
       searchQuery: {
         listSub1: '',
         listSub2: '',
+        listSub3: '',
         boardSub1: '',
         boardSub2: '',
         boardSub3: ''
@@ -110,6 +115,8 @@ const app = createApp({
       lastRefreshedTime: '',
       showWarningModal: false,
       hasSeenNomineeModal: false,
+      editors: [],
+      selectedEditor: ''
     }
   },
   computed: {
@@ -118,7 +125,8 @@ const app = createApp({
         awardSub1: this.sortItems(this.awardData.awardSub1, this.selectedFilter.awardSub1, { dateField: 'award_date', rateField: 'rating' }, this.searchQuery.awardSub1 || ''),
         awardSub2: this.sortItems(this.awardData.awardSub2, this.selectedFilter.awardSub2, { dateField: 'award_date', rateField: 'rating' }, this.searchQuery.awardSub2 || ''),
         awardSub3: this.sortItems(this.awardData.awardSub3, this.selectedFilter.awardSub3, { dateField: 'created_at', rateField: 'rating' }, this.searchQuery.awardSub3 || ''),
-        listSub2: this.sortItems(this.listData.listSub2, this.selectedFilter.listSub2, { dateField: 'created_at', viewsField: 'views' }, this.searchQuery.listSub2 || '')
+        listSub2: this.sortItems(this.listData.listSub2, this.selectedFilter.listSub2, { dateField: 'created_at', viewsField: 'views' }, this.searchQuery.listSub2 || ''),
+        listSub3: this.sortItems(this.listData.listSub3, this.selectedFilter.listSub3, { dateField: 'created_at', viewsField: 'views' }, this.searchQuery.listSub3 || '', this.selectedEditor)
       }
     },
     pagedItems() {
@@ -126,7 +134,8 @@ const app = createApp({
         awardSub1: this.paginate(this.sortedItems.awardSub1, this.currentPage.awardSub1, this.itemsPerPage),
         awardSub2: this.paginate(this.sortedItems.awardSub2, this.currentPage.awardSub2, this.itemsPerPage),
         awardSub3: this.paginate(this.sortedItems.awardSub3, this.currentPage.awardSub3, this.itemsPerPage),
-        listSub2: this.paginate(this.sortedItems.listSub2, this.currentPage.listSub2, this.itemsPerPage)
+        listSub2: this.paginate(this.sortedItems.listSub2, this.currentPage.listSub2, this.itemsPerPage),
+        listSub3: this.paginate(this.sortedItems.listSub3, this.currentPage.listSub3, this.itemsPerPage)
       }
     },
     totalPages() {
@@ -134,7 +143,8 @@ const app = createApp({
         awardSub1: Math.ceil(this.sortedItems.awardSub1.length / this.itemsPerPage),
         awardSub2: Math.ceil(this.sortedItems.awardSub2.length / this.itemsPerPage),
         awardSub3: Math.ceil(this.sortedItems.awardSub3.length / this.itemsPerPage),
-        listSub2: Math.ceil(this.sortedItems.listSub2.length / this.itemsPerPage)
+        listSub2: Math.ceil(this.sortedItems.listSub2.length / this.itemsPerPage),
+        listSub3: Math.ceil(this.sortedItems.listSub3.length / this.itemsPerPage)
       }
     },
     sortedBoard() {
@@ -175,8 +185,8 @@ const app = createApp({
       return route ? route.meta.description : 'Red Line Awards is a movie awards blog that introduces a wide range of films, including older movies, and provides fair evaluations and a user-friendly experience.';
     },
     getMovieImageUrl() {
-      if (this.cp === 'listSub2') {
-        return this.activeMovie.image;
+      if (this.cp === 'listSub2' || this.cp === 'listSub3') {
+        return this.activeMovie.poster_url;
       } else {
         return this.activeMovie.poster_url;
       }
@@ -213,6 +223,8 @@ const app = createApp({
             await this.fetchDiscussions();
             await this.fetchSoundtrack();
             await this.fetchMastersPick();
+            await this.fetchEditors();
+            await this.fetchEditorsPick();
             await this.fetchNowPlayingMovies();
             await this.fetchMovieAwards();
             await this.fetchNominees();
@@ -395,11 +407,14 @@ const app = createApp({
         gsap.to(gridRef, { duration: 0.3, opacity: 0, onComplete: () => { this.currentPage[menu]++; gsap.to(gridRef, { duration: 0.3, opacity: 1 }); } });
       }
     },
-    sortItems(arr, flt, options = {}, query = '') {
+    sortItems(arr, flt, options = {}, query = '', editorId = '') {
       let filtered = arr;
       if (query) {
         const lowerQuery = query.toLowerCase();
-        filtered = arr.filter(item => item.title.toLowerCase().includes(lowerQuery));
+        filtered = filtered.filter(item => item.title.toLowerCase().includes(lowerQuery));
+      }
+      if (editorId) {
+        filtered = filtered.filter(item => item.editor_id === editorId);
       }
       let sorted = [...filtered];
       const { dateField = 'created_at', rateField = 'rating', viewsField = 'views' } = options;
@@ -524,6 +539,14 @@ const app = createApp({
       if (this.cp === 'listSub2') {
         await this.supabase.from('masters_pick').update({ views: movie.views + 1 }).eq('id', movie.id);
         this.fetchMastersPick();
+      } else if (this.cp === 'listSub3') {
+        const viewedPosts = JSON.parse(localStorage.getItem('viewedPosts') || '{}');
+        if (!viewedPosts[movie.id]) {
+          await this.supabase.from('editors_pick').update({ views: movie.views + 1 }).eq('id', movie.id);
+          viewedPosts[movie.id] = true;
+          localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
+          this.fetchEditorsPick();
+        }
       }
     },
     closeMovieDetail() {
@@ -688,10 +711,36 @@ const app = createApp({
           id: item.id,
           title: item.title,
           description: item.content,
-          image: item.poster_url,
+          poster_url: item.poster_url,
           views: item.views,
           created_at: item.created_at,
-          is_ad: item.is_ad // is_ad 추가
+          is_ad: item.is_ad
+        }));
+      }
+    },
+    async fetchEditors() {
+      let { data, error } = await this.supabase.from('editors').select('id, name');
+      if (error) {
+        console.error("Fetch Editors Error:", error);
+      } else {
+        this.editors = data;
+      }
+    },
+    async fetchEditorsPick() {
+      let { data, error } = await this.supabase.from('editors_pick').select('*, editors(name)');
+      if (error) {
+        console.error("Fetch Editor's Pick Error:", error);
+      } else {
+        this.listData.listSub3 = data.map(item => ({
+          id: item.id,
+          editor_id: item.editor_id,
+          editor_name: item.editors.name,
+          title: item.title,
+          description: item.content,
+          poster_url: item.poster_url,
+          views: item.views,
+          created_at: item.created_at,
+          is_ad: item.is_ad
         }));
       }
     },

@@ -100,6 +100,7 @@
             <ul>
               <li><a href="#" @click.prevent="chPg('listSub1')">Soundtrack</a></li>
               <li><a href="#" @click.prevent="chPg('listSub2')">Master's Pick</a></li>
+              <li><a href="#" @click.prevent="chPg('listSub3')">Editor's Pick</a></li>
             </ul>
           </div>
           <div class="dropdown-column">
@@ -348,8 +349,9 @@
               </div>
               <div id="list" class="tutorial-section">
                 <h2 style="width: 4.2rem;">List</h2>
-                <p>In the List menu, users can explore Soundtracks and <strong>[Master’s Picks]</strong>.</p>
+                <p>In the List menu, users can explore Soundtracks, <strong>[Master’s Picks]</strong>, and <strong>[Editor's Picks]</strong>.</p>
                 <p><strong>Master's Pick</strong>: The Master occasionally recommends movies on an irregular basis.</p>
+                <p><strong>Editor's Pick</strong>: Editors recommend movies and share their insights.</p>
               </div>
               <div id="board" class="tutorial-section">
                 <h2 style="width: 6.6rem;">Board</h2>
@@ -500,9 +502,10 @@
             <div class="movie-grid-award" ref="grid_listSub2">
               <div v-if="pagedItems.listSub2.length === 0" style="text-align: center; padding: 20px; color: #fff;">No Post</div>
               <div v-for="item in pagedItems.listSub2" :key="item.id" class="movie-item" @click="openMovieDetail(item)">
-                <div class="poster" :style="{ backgroundImage: 'url(' + item.image + ')' }">                <!-- 추가된 AD 뱃지 -->
-                <div v-if="item.is_ad" class="ad-badge">AD</div></div>
-
+                <div class="poster" :style="{ backgroundImage: 'url(' + item.image + ')' }">
+                  <!-- 추가된 AD 뱃지 -->
+                  <div v-if="item.is_ad" class="ad-badge">AD</div>
+                </div>
                 <div class="movie-info">
                   <span class="movie-title">{{ item.title }}</span>
                   <span class="movie-views">{{ item.views }} views</span>
@@ -517,6 +520,45 @@
               <button @click="pgPr('listSub2')" :disabled="currentPage.listSub2 === 1">Prev</button>
               <span>{{ currentPage.listSub2 }} / {{ totalPages.listSub2 }}</span>
               <button @click="pgNx('listSub2')" :disabled="currentPage.listSub2 === totalPages.listSub2">Next</button>
+            </div>
+          </section>
+        </div>
+        <div v-if="cp === 'listSub3'" class="page award-page">
+          <section id="listSub3" class="award-wrapper">
+            <div class="award-header">
+              <h1 class="award-title">Editor's Pick</h1>
+              <div class="filter-group">
+                <button :class="{'active': selectedFilter.listSub3==='Newest'}" @click="fltCh('listSub3','Newest')">Newest</button>
+                <button :class="{'active': selectedFilter.listSub3==='Oldest'}" @click="fltCh('listSub3','Oldest')">Oldest</button>
+                <button :class="{'active': selectedFilter.listSub3==='Views'}" @click="fltCh('listSub3','Views')">Most Viewed</button>
+                <select v-model="selectedEditor" @change="fltCh('listSub3', selectedFilter.listSub3)">
+                  <option value="">All Editors</option>
+                  <option v-for="editor in editors" :key="editor.id" :value="editor.id">{{ editor.name }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="movie-grid-award" ref="grid_listSub3">
+              <div v-if="pagedItems.listSub3.length === 0" style="text-align: center; padding: 20px; color: #fff;">No Post</div>
+              <div v-for="item in pagedItems.listSub3" :key="item.id" class="movie-item" @click="openMovieDetail(item)">
+                <div class="poster" :style="{ backgroundImage: 'url(' + item.poster_url + ')' }">
+                  <!-- 추가된 AD 뱃지 -->
+                  <div v-if="item.is_ad" class="ad-badge">AD</div>
+                </div>
+                <div class="movie-info">
+                  <span class="movie-title">{{ item.title }}</span>
+                  <span class="movie-author">{{ item.editor_name }}</span>
+                  <span class="movie-views">{{ item.views }} views</span>
+                </div>
+              </div>
+            </div>
+            <div class="search-bar">
+              <input type="text" v-model="searchQuery.listSub3" placeholder="검색" @keydown.enter="searchItems('listSub3')" />
+              <button class="search-submit" @click="searchItems('listSub3')">입력</button>
+            </div>
+            <div class="pagination">
+              <button @click="pgPr('listSub3')" :disabled="currentPage.listSub3 === 1">Prev</button>
+              <span>{{ currentPage.listSub3 }} / {{ totalPages.listSub3 }}</span>
+              <button @click="pgNx('listSub3')" :disabled="currentPage.listSub3 === totalPages.listSub3">Next</button>
             </div>
           </section>
         </div>
@@ -671,11 +713,12 @@
             <img :src="getMovieImageUrl()" :alt="activeMovie.title + ' Poster'" class="movie-poster" />
           </div>
           <div class="movie-info-container">
-            <p v-if="cp !== 'listSub2'" class="movie-info-item"><strong>Rating:</strong> {{ activeMovie.rating }}</p>
-            <p v-if="cp !== 'listSub2'" class="movie-info-item"><strong>Award Date:</strong> {{ activeMovie.award_date }}</p>
-            <p v-if="cp !== 'listSub2'" class="movie-info-item"><strong>Short Description:</strong> {{ activeMovie.short_description }}</p>
-            <p v-if="cp === 'listSub2'" class="movie-info-item"><strong>Created At:</strong> {{ formatDate(activeMovie.created_at) }}</p>
-            <p v-if="cp === 'listSub2'" class="movie-info-item"><strong>View:</strong> {{ activeMovie.views }}</p>
+            <p v-if="cp !== 'listSub2' && cp !== 'listSub3'" class="movie-info-item"><strong>Rating:</strong> {{ activeMovie.rating }}</p>
+            <p v-if="cp !== 'listSub2' && cp !== 'listSub3'" class="movie-info-item"><strong>Award Date:</strong> {{ activeMovie.award_date }}</p>
+            <p v-if="cp !== 'listSub2' && cp !== 'listSub3'" class="movie-info-item"><strong>Short Description:</strong> {{ activeMovie.short_description }}</p>
+            <p v-if="cp === 'listSub2' || cp === 'listSub3'" class="movie-info-item"><strong>Created At:</strong> {{ formatDate(activeMovie.created_at) }}</p>
+            <p v-if="cp === 'listSub2' || cp === 'listSub3'" class="movie-info-item"><strong>View:</strong> {{ activeMovie.views }}</p>
+            <p v-if="cp === 'listSub3'" class="movie-info-item"><strong>Author:</strong> {{ activeMovie.editor_name }}</p>
           </div>
         </div>
         <hr class="section-divider" />
@@ -756,5 +799,4 @@
 
     window.addEventListener('scroll', adjustBannerPosition);
   </script>
- </body>
-</html>
+  </html>
