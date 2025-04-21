@@ -150,7 +150,7 @@
             </div>
             <div id="movie-expanded" class="movie-expanded" style="display: none;">
               <div id="movie-expanded-wrapper">
-                <button id="close-expanded" class="close-expanded" @click="clsExp">X</button>
+                <button id="close-expanded" class="close-expanded" @click="clsExp"><img src="./close_red.png"></button>
                 <div class="movie-expanded-content">
                   <div class="movie-slider-container">
                     <div class="swiper-container movie-slider">
@@ -672,7 +672,7 @@
       <div class="post-view-content">
         <div class="post-view-header">
           <h2>{{ activePost.title }}</h2>
-          <button class="close-post-view" @click="closePostView">X</button>
+          <button class="close-post-view" @click="closePostView"><img src="./close_fff.png"></button>
         </div>
         <div v-if="activeBoard==='boardSub1' || activeBoard==='boardSub2' || activeBoard==='listSub1'">
           <div class="post-date">{{ formatDate(activePost.date) }}</div>
@@ -708,7 +708,7 @@
       <div class="post-view-content">
         <div class="post-view-header">
           <h2>{{ activeMovie.title }}</h2>
-          <button class="close-post-view" @click="closeMovieDetail">X</button>
+          <button class="close-post-view" @click="closeMovieDetail"><img src="./close_fff.png"></button>
         </div>
         <div class="upper-section">
           <div class="movie-poster-container">
@@ -746,7 +746,7 @@
       <div class="post-view-content">
         <div class="post-view-header">
           <h2>{{ activeNominee.movie_title }}</h2>
-          <button class="close-post-view" @click="closeNomineeDetail">X</button>
+          <button class="close-post-view" @click="closeNomineeDetail"><img src="./close_fff.png"></button>
         </div>
         <div class="upper-section">
           <div class="movie-poster-container">
