@@ -148,8 +148,9 @@ section { max-width: 1040px; width: 100%; margin: 20px auto; padding: 20px; posi
 #movie-detail-modal { position: fixed; top: 100%; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.90); color: #fff; z-index: 2000; display: flex; flex-direction: column; overflow-y: auto; }
 .post-view-content { padding: 20px; }
 .post-view-header {margin-bottom: 1rem; padding-bottom: 0.4rem; border-bottom: solid 2px #fff; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
-.close-post-view {width: 22px; height: 23px; z-index: 10; position: fixed; right: 1rem;  background: #e90000; border: solid 2px #fff; font-size: 1.2rem; color: #fff; cursor: pointer; }
+.close-post-view { display: flex; justify-content: center; align-items: center; width: 22px; height: 23px; z-index: 10; position: fixed; right: 1rem;  background: #e90000; border: solid 2px #fff; color: #fff; cursor: pointer; }
 @media screen and (max-width: 1471px) { .close-post-view {bottom: 0.4rem; right: 0; } }
+.close-post-view img{ width: 22px; height: 22px;}
 .upper-section { display: flex; flex-direction: row; align-items: flex-start; margin-bottom: 20px; }
 .movie-poster-container { margin-top: 0.6rem; flex: 0 0 200px; margin-right: 20px; }
 .movie-poster-container .movie-poster { width: min(24vw,400px);}
