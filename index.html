@@ -655,7 +655,7 @@
         <div class="chat-messages" ref="chatMessages">
           <div v-for="(message, index) in chatMessages" :key="index" :class="message.is_admin ? 'admin-message' : 'user-message'">
             <div class="message-text">{{ message.message_text }}</div>
-            <!-- <div class="message-status">{{ getMessageStatus(message) }}</div> -->
+            <!-- <div class="message-status">{{ getMessageStatus(message) }}</div> --> <!--2025-04-22 임시 비활성화.-->>
             <div v-if="isAutoEndMessage(message)" class="auto-end-buttons">
               <button @click="sendResponse('O')">O</button>
               <button @click="sendResponse('X')">X</button>
