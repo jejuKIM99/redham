@@ -980,6 +980,8 @@ const app = createApp({
           if (payload.new.status === 'closed') {
             this.closeChatWindow();
           }
+          // 메시지 상태 업데이트
+          this.updateMessageStatuses();
         })
         .subscribe();
     },
@@ -995,6 +997,12 @@ const app = createApp({
     },
     async sendResponse(response) {
       await this.supabase.from('chat_messages').insert([{ session_id: this.chatSession.id, message_text: response, is_admin: false }]);
+    },
+    updateMessageStatuses() {
+      this.chatMessages = this.chatMessages.map(message => {
+        const status = this.getMessageStatus(message);
+        return { ...message, status };
+      });
     },
     getMessageStatus(message) {
       if (message.is_admin) {
