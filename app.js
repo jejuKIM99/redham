@@ -1130,10 +1130,10 @@ const app = createApp({
         }
       }
     },
-    async refreshNominees() {
-      await this.fetchNominees();
-      this.lastRefreshedTime = new Date().toLocaleTimeString();
-    },
+    // async refreshNominees() {
+    //   await this.fetchNominees();
+    //   this.lastRefreshedTime = new Date().toLocaleTimeString();
+    // },
     setupNomineesRealtime() {
       this.nomineesChannel = this.supabase
         .channel('nominees-changes')
@@ -1201,7 +1201,7 @@ const app = createApp({
       })
       .subscribe();
     this.setupNomineesRealtime();
-    this.refreshNominees();
+    // this.refreshNominees();
   },
   beforeUnmount() {
     if (this.realtimeChannel) {
