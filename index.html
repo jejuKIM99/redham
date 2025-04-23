@@ -400,12 +400,14 @@
         <div v-if="cp === 'awardSub2'" class="page award-page">
           <section id="awardSub2" class="award-wrapper">
             <div class="award-header">
+              <div class="header-block">
               <h1 class="award-title">Movie of the Year</h1>
-              <div class="refresh-container">
-                <button class="refresh-btn" @click="refreshPosts('awardSub2')">
-                  <img src="./refresh-icon.png" alt="Refresh Movie of the Year" />
-                </button>
-                <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+                <div class="refresh-container">
+                  <button class="refresh-btn" @click="refreshPosts('awardSub2')">
+                    <img src="./refresh-icon.png" alt="Refresh Movie of the Year" />
+                  </button>
+                  <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+                </div>
               </div>
               <div class="filter-group">
                 <button :class="{'active': selectedFilter.awardSub2==='Newest'}" @click="fltCh('awardSub2','Newest')">Newest</button>
@@ -479,12 +481,14 @@
         <div v-if="cp === 'listSub1'" class="page">
           <section id="listSub1" ref="listSub1">
             <div class="board-header">
+              <div class="header-block">>
               <h1>Soundtrack</h1>
               <div class="refresh-container">
                 <button class="refresh-btn" @click="refreshPosts('listSub1')">
                   <img src="./refresh-icon.png" alt="Refresh Soundtrack" />
                 </button>
                 <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+              </div>
               </div>
               <div class="filter-group">
                 <button :class="{'active': selectedFilter.listSub1==='Newest'}" @click="boardFltCh('listSub1','Newest')">Newest</button>
