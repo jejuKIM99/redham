@@ -399,6 +399,12 @@
           <section id="awardSub2" class="award-wrapper">
             <div class="award-header">
               <h1 class="award-title">Movie of the Year</h1>
+              <div class="refresh-container">
+                <button class="refresh-btn" @click="refreshPosts('awardSub2')">
+                  <img src="./refresh-icon.png" alt="Refresh Movie of the Year" />
+                </button>
+                <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+              </div>
               <div class="filter-group">
                 <button :class="{'active': selectedFilter.awardSub2==='Newest'}" @click="fltCh('awardSub2','Newest')">Newest</button>
                 <button :class="{'active': selectedFilter.awardSub2==='Oldest'}" @click="fltCh('awardSub2','Oldest')">Oldest</button>
@@ -428,7 +434,7 @@
               <div class="header-block">
                 <h1 class="award-title">Nominee List</h1>
                 <div class="refresh-container">
-                  <button class="refresh-btn" @click="refreshNominees">
+                  <button class="refresh-btn" @click="refreshPosts('awardSub3')">
                     <img src="./refresh-icon.png" alt="Refresh Nominee List" />
                   </button>
                   <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
