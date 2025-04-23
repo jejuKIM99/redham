@@ -481,7 +481,7 @@
         <div v-if="cp === 'listSub1'" class="page">
           <section id="listSub1" ref="listSub1">
             <div class="board-header">
-              <div class="header-block">>
+              <div class="header-block">
               <h1>Soundtrack</h1>
               <div class="refresh-container">
                 <button class="refresh-btn" @click="refreshPosts('listSub1')">
@@ -517,12 +517,14 @@
         <div v-if="cp === 'listSub2'" class="page award-page">
           <section id="listSub2" class="award-wrapper">
             <div class="award-header">
+              <div class="header-block">
               <h1 class="award-title">Master's Pick</h1>
               <div class="refresh-container">
                 <button class="refresh-btn" @click="refreshPosts('listSub2')">
                   <img src="./refresh-icon.png" alt="Refresh Master's Pick" />
                 </button>
                 <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+              </div>
               </div>
               <div class="filter-group">
                 <button :class="{'active': selectedFilter.listSub2==='Newest'}" @click="fltCh('listSub2','Newest')">Newest</button>
@@ -557,12 +559,14 @@
         <div v-if="cp === 'listSub3'" class="page award-page">
           <section id="listSub3" class="award-wrapper">
             <div class="award-header">
+              <div class="header-block">
               <h1 class="award-title">Editor's Pick</h1>
               <div class="refresh-container">
                 <button class="refresh-btn" @click="refreshPosts('listSub3')">
                   <img src="./refresh-icon.png" alt="Refresh Editor's Pick" />
                 </button>
                 <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+              </div>
               </div>
               <div class="filter-group">
                 <button :class="{'active': selectedFilter.listSub3==='Newest'}" @click="fltCh('listSub3','Newest')">Newest</button>
@@ -603,12 +607,14 @@
         <div v-if="cp === 'boardSub1'" class="page">
           <section id="boardSub1" ref="boardSub1">
             <div class="board-header">
+              <div class="header-block">
               <h1>Notices Board</h1>
               <div class="refresh-container">
                 <button class="refresh-btn" @click="refreshPosts('boardSub1')">
                   <img src="./refresh-icon.png" alt="Refresh Notices" />
                 </button>
                 <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+              </div>
               </div>
               <div class="filter-group">
                 <button :class="{'active': selectedFilter.boardSub1==='Newest'}" @click="boardFltCh('boardSub1','Newest')">Newest</button>
@@ -636,12 +642,14 @@
         <div v-if="cp === 'boardSub2'" class="page">
           <section id="boardSub2" ref="boardSub2">
             <div class="board-header">
+              <div class="header-block">
               <h1>Event Board</h1>
               <div class="refresh-container">
                 <button class="refresh-btn" @click="refreshPosts('boardSub2')">
                   <img src="./refresh-icon.png" alt="Refresh Events" />
                 </button>
                 <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+              </div>
               </div>
               <div class="filter-group">
                 <button :class="{'active': selectedFilter.boardSub2==='Newest'}" @click="boardFltCh('boardSub2','Newest')">Newest</button>
