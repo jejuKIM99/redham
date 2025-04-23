@@ -366,6 +366,12 @@
           <section id="awardSub1" class="award-wrapper">
             <div class="award-header">
               <h1 class="award-title">Movie of the Month</h1>
+              <div class="refresh-container">
+                <button class="refresh-btn" @click="refreshPosts('awardSub1')">
+                  <img src="./refresh-icon.png" alt="Refresh Movie of the Month" />
+                </button>
+                <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+              </div>
               <div class="filter-group">
                 <button :class="{'active': selectedFilter.awardSub1==='Newest'}" @click="fltCh('awardSub1','Newest')">Newest</button>
                 <button :class="{'active': selectedFilter.awardSub1==='Oldest'}" @click="fltCh('awardSub1','Oldest')">Oldest</button>

@@ -849,6 +849,40 @@ const app = createApp({
         }
       }
     },
+    async refreshPosts(menu) {
+      switch (menu) {
+        case 'awardSub1':
+          await this.fetchMovieAwards(); // awardSub1 데이터 새로고침
+          break;
+        case 'awardSub2':
+          await this.fetchMovieAwards(); // awardSub2 데이터 새로고침
+          break;
+        case 'awardSub3':
+          await this.fetchNominees(); // awardSub3 데이터 새로고침
+          break;
+        case 'listSub1':
+          await this.fetchSoundtrack(); // listSub1 데이터 새로고침
+          break;
+        case 'listSub2':
+          await this.fetchMastersPick(); // listSub2 데이터 새로고침
+          break;
+        case 'listSub3':
+          await this.fetchEditorsPick(); // listSub3 데이터 새로고침
+          break;
+        case 'boardSub1':
+          await this.fetchNotices(); // boardSub1 데이터 새로고침
+          break;
+        case 'boardSub2':
+          await this.fetchEvents(); // boardSub2 데이터 새로고침
+          break;
+        case 'boardSub3':
+          await this.fetchDiscussions(); // boardSub3 데이터 새로고침
+          break;
+        default:
+          console.error('Unknown menu:', menu);
+      }
+      this.lastRefreshedTime = new Date().toLocaleTimeString(); // 새로고침 시간 업데이트
+    },
     startLoading() {
       const updateProgress = () => {
         const resources = performance.getEntriesByType('resource');
