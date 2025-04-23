@@ -478,6 +478,12 @@
           <section id="listSub1" ref="listSub1">
             <div class="board-header">
               <h1>Soundtrack</h1>
+              <div class="refresh-container">
+                <button class="refresh-btn" @click="refreshPosts('listSub1')">
+                  <img src="./refresh-icon.png" alt="Refresh Soundtrack" />
+                </button>
+                <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+              </div>
               <div class="filter-group">
                 <button :class="{'active': selectedFilter.listSub1==='Newest'}" @click="boardFltCh('listSub1','Newest')">Newest</button>
                 <button :class="{'active': selectedFilter.listSub1==='Oldest'}" @click="boardFltCh('listSub1','Oldest')">Oldest</button>
@@ -506,6 +512,12 @@
           <section id="listSub2" class="award-wrapper">
             <div class="award-header">
               <h1 class="award-title">Master's Pick</h1>
+              <div class="refresh-container">
+                <button class="refresh-btn" @click="refreshPosts('listSub2')">
+                  <img src="./refresh-icon.png" alt="Refresh Master's Pick" />
+                </button>
+                <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+              </div>
               <div class="filter-group">
                 <button :class="{'active': selectedFilter.listSub2==='Newest'}" @click="fltCh('listSub2','Newest')">Newest</button>
                 <button :class="{'active': selectedFilter.listSub2==='Oldest'}" @click="fltCh('listSub2','Oldest')">Oldest</button>
@@ -540,6 +552,12 @@
           <section id="listSub3" class="award-wrapper">
             <div class="award-header">
               <h1 class="award-title">Editor's Pick</h1>
+              <div class="refresh-container">
+                <button class="refresh-btn" @click="refreshPosts('listSub3')">
+                  <img src="./refresh-icon.png" alt="Refresh Editor's Pick" />
+                </button>
+                <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+              </div>
               <div class="filter-group">
                 <button :class="{'active': selectedFilter.listSub3==='Newest'}" @click="fltCh('listSub3','Newest')">Newest</button>
                 <button :class="{'active': selectedFilter.listSub3==='Oldest'}" @click="fltCh('listSub3','Oldest')">Oldest</button>
@@ -580,6 +598,12 @@
           <section id="boardSub1" ref="boardSub1">
             <div class="board-header">
               <h1>Notices Board</h1>
+              <div class="refresh-container">
+                <button class="refresh-btn" @click="refreshPosts('boardSub1')">
+                  <img src="./refresh-icon.png" alt="Refresh Notices" />
+                </button>
+                <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+              </div>
               <div class="filter-group">
                 <button :class="{'active': selectedFilter.boardSub1==='Newest'}" @click="boardFltCh('boardSub1','Newest')">Newest</button>
                 <button :class="{'active': selectedFilter.boardSub1==='Oldest'}" @click="boardFltCh('boardSub1','Oldest')">Oldest</button>
@@ -607,6 +631,12 @@
           <section id="boardSub2" ref="boardSub2">
             <div class="board-header">
               <h1>Event Board</h1>
+              <div class="refresh-container">
+                <button class="refresh-btn" @click="refreshPosts('boardSub2')">
+                  <img src="./refresh-icon.png" alt="Refresh Events" />
+                </button>
+                <span class="last-refreshed">Last refreshed: {{ lastRefreshedTime }}</span>
+              </div>
               <div class="filter-group">
                 <button :class="{'active': selectedFilter.boardSub2==='Newest'}" @click="boardFltCh('boardSub2','Newest')">Newest</button>
                 <button :class="{'active': selectedFilter.boardSub2==='Oldest'}" @click="boardFltCh('boardSub2','Oldest')">Oldest</button>

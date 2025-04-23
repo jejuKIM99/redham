@@ -875,9 +875,6 @@ const app = createApp({
         case 'boardSub2':
           await this.fetchEvents(); // boardSub2 데이터 새로고침
           break;
-        case 'boardSub3':
-          await this.fetchDiscussions(); // boardSub3 데이터 새로고침
-          break;
         default:
           console.error('Unknown menu:', menu);
       }
