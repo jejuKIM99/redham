@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: "National Park", sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .section {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+        }
+        .content {
+            width: 1180px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .section1 {
+            background: linear-gradient(180deg, #e90000 32%, transparent 95%);
+        }
+        .left, .right {
+            width: 48%;
+        }
+        .left img {
+            filter: drop-shadow(8px 6px 4px #000);
+            width: 60%;
+            margin-bottom: 20px;
+        }
+        .right h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .right p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .download-btn {
+            background-color: #fff;
+            color: #e90000;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .section2 {
+            background-color: transparent;
+        }
+        .update-list {
+            width: 48%;
+            padding: 20px;
+        }
+        .update-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        .update-list li {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .update-list li:hover, .update-list li.active {
+            background: linear-gradient(90deg, #e90000 46%, transparent 80%);
+        }
+        .update-content {
+            border-left: solid 2px #fff;
+            width: 48%;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .ver_btn {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        a{
+            margin-top: 10px;
+        }
+
+        p{
+            white-space: pre-line;
+        }
+
+        p span{
+            font-weight: bold;
+            font-size: 1.26rem;
+        }
+
+        h2{
+            border-bottom: solid 2px #fff;
+            padding: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="section section1" style="height: 350px;">
+        <div class="content">
+            <div class="left" style="display: flex; align-items: center; justify-content: center;">
+                <img src="logo.png" alt="Logo">
+            </div>
+            <div class="right" style="font-size: min(14px, 1.4vw); align-items: center;">
+                <h1>Welcome to Download Center!</h1>
+                <p>Welcome to the Red Line Awards Download Center. This program provides the latest features and is designed for user convenience.<br>
+                    <span>LTS version</span> is the <span>stable release</span>, while the <span>Current version</span> is the latest release.<br>
+                    Since the Current version is under ongoing development, it is considered unstable and may cause inconveniences during use.</p>
+                <div class="ver_btn">
+                    <a href="#" class="download-btn" id="ltsDownloadBtn">Download LTS Version</a>
+                    <a href="#" class="download-btn" id="currentDownloadBtn">Download Current Version</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section section2" style="height: 400px;">
+        <div class="content">
+            <div class="update-list">
+                <h2>Update Notices</h2>
+                <ul id="updateList"></ul>
+            </div>
+            <div class="update-content" id="updateContent">
+                <h2>Notice Content</h2>
+                <p>The content of the selected notice will be displayed here.</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const supabaseUrl = "https://hthtzipxhfezjduxskzg.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0aHR6aXB4aGZlempkdXhza3pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE5MTE1MzQsImV4cCI6MjA1NzQ4NzUzNH0.e-SodT9c9kv6Gm4HytAjYoIvnOfQTvFBFzLTiGFaxwg";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+            async function loadUpdates() {
+                if (typeof supabase === 'undefined') {
+                    console.error('Supabase is not defined');
+                    return;
+                }
+                const { data: pinnedData, error: pinnedError } = await supabase
+                    .from('updates')
+                    .select('*')
+                    .eq('id', 5)
+                    .limit(1);
+                if (pinnedError) {
+                    console.error('Error loading pinned update:', pinnedError);
+                }
+                const { data: otherData, error: otherError } = await supabase
+                    .from('updates')
+                    .select('*')
+                    .neq('id', 5)
+                    .order('created_at', { ascending: false })
+                    .limit(9);
+                if (otherError) {
+                    console.error('Error loading other updates:', otherError);
+                    return;
+                }
+                const data = pinnedData && pinnedData.length > 0 ? [...pinnedData, ...otherData] : otherData;
+
+                const updateList = document.getElementById('updateList');
+                updateList.innerHTML = '';
+                data.forEach(update => {
+                    const li = document.createElement('li');
+                    li.textContent = update.title;
+                    li.addEventListener('click', () => {
+                        document.querySelectorAll('.update-list li').forEach(el => el.classList.remove('active'));
+                        li.classList.add('active');
+                        document.getElementById('updateContent').innerHTML = `<h2>${update.title}</h2><p>${update.content}</p>`;
+                    });
+                    updateList.appendChild(li);
+                });
+                if (data.length > 0) {
+                    updateList.firstChild.click();
+                }
+            }
+
+            async function loadDownloadUrls() {
+                if (typeof supabase === 'undefined') {
+                    console.error('Supabase is not defined');
+                    return;
+                }
+                // LTS 버전 가져오기
+                const { data: ltsData, error: ltsError } = await supabase
+                    .from('downloads')
+                    .select('download_url')
+                    .eq('is_lts', true)
+                    .order('release_date', { ascending: false })
+                    .limit(1);
+                if (ltsError) {
+                    console.error('Error loading LTS download URL:', ltsError);
+                } else if (ltsData.length > 0) {
+                    document.getElementById('ltsDownloadBtn').href = ltsData[0].download_url;
+                }
+
+                // Current 버전 가져오기
+                const { data: currentData, error: currentError } = await supabase
+                    .from('downloads')
+                    .select('download_url')
+                    .eq('is_lts', false)
+                    .order('release_date', { ascending: false })
+                    .limit(1);
+                if (currentError) {
+                    console.error('Error loading Current download URL:', currentError);
+                } else if (currentData.length > 0) {
+                    document.getElementById('currentDownloadBtn').href = currentData[0].download_url;
+                }
+            }
+
+            loadUpdates();
+            loadDownloadUrls();
+        });
+    </script>
+    </body>
+</html>
