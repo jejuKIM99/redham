@@ -7,6 +7,16 @@
     <link href="https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
     <style>
+        html {
+            -ms-overflow-style: none; /* for Internet Explorer, Edge */
+            scrollbar-width: none; /* for Firefox */
+            overflow-y: scroll; 
+        }
+
+        html::-webkit-scrollbar {
+            display: none; /* for Chrome, Safari, and Opera */
+        }
+
         body {
             background-color: #000;
             color: #fff;
@@ -45,6 +55,7 @@
             margin-bottom: 20px;
         }
         .download-btn {
+            border: inset 2px #e90000;
             background-color: #fff;
             color: #e90000;
             padding: 10px 20px;
@@ -52,6 +63,14 @@
             font-weight: bold;
             border-radius: 5px;
             margin-right: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .download-btn span {
+            font-size: 0.9em;
+            margin-top: 5px;
         }
         .section2 {
             background-color: transparent;
@@ -67,15 +86,31 @@
         .update-list li {
             padding: 10px;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
-        .update-list li:hover, .update-list li.active {
-            background: linear-gradient(90deg, #e90000 46%, transparent 80%);
+        .update-list li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, #e90000 50%, transparent 100%);
+            transition: width 0.6s ease;
+            z-index: -1;
+        }
+        .update-list li:hover::before, .update-list li.active::before {
+            width: 100%;
+        }
+        .update-list li.active {
+            background: none;
         }
         .update-content {
             border-left: solid 2px #fff;
             width: 48%;
             padding: 20px;
-            max-height: 400px;
             overflow-y: auto;
         }
         .ver_btn {
@@ -83,20 +118,20 @@
             flex-wrap: wrap;
         }
 
-        a{
+        a {
             margin-top: 10px;
         }
 
-        p{
+        p {
             white-space: pre-line;
         }
 
-        p span{
+        p span {
             font-weight: bold;
             font-size: 1.26rem;
         }
 
-        h2{
+        h2 {
             border-bottom: solid 2px #fff;
             padding: 4px;
         }
@@ -114,13 +149,13 @@
                     <span>LTS version</span> is the <span>stable release</span>, while the <span>Current version</span> is the latest release.<br>
                     Since the Current version is under ongoing development, it is considered unstable and may cause inconveniences during use.</p>
                 <div class="ver_btn">
-                    <a href="#" class="download-btn" id="ltsDownloadBtn">Download LTS Version</a>
-                    <a href="#" class="download-btn" id="currentDownloadBtn">Download Current Version</a>
+                    <a href="#" class="download-btn" id="ltsDownloadBtn">Download LTS Version<span id="ltsVersion"></span></a>
+                    <a href="#" class="download-btn" id="currentDownloadBtn">Download Current Version<span id="currentVersion"></span></a>
                 </div>
             </div>
         </div>
     </div>
-    <div class="section section2" style="height: 400px;">
+    <div class="section section2">
         <div class="content">
             <div class="update-list">
                 <h2>Update Notices</h2>
@@ -189,7 +224,7 @@
                 // LTS 버전 가져오기
                 const { data: ltsData, error: ltsError } = await supabase
                     .from('downloads')
-                    .select('download_url')
+                    .select('download_url, version')
                     .eq('is_lts', true)
                     .order('release_date', { ascending: false })
                     .limit(1);
@@ -197,12 +232,13 @@
                     console.error('Error loading LTS download URL:', ltsError);
                 } else if (ltsData.length > 0) {
                     document.getElementById('ltsDownloadBtn').href = ltsData[0].download_url;
+                    document.getElementById('ltsVersion').textContent = ltsData[0].version;
                 }
 
                 // Current 버전 가져오기
                 const { data: currentData, error: currentError } = await supabase
                     .from('downloads')
-                    .select('download_url')
+                    .select('download_url, version')
                     .eq('is_lts', false)
                     .order('release_date', { ascending: false })
                     .limit(1);
@@ -210,6 +246,7 @@
                     console.error('Error loading Current download URL:', currentError);
                 } else if (currentData.length > 0) {
                     document.getElementById('currentDownloadBtn').href = currentData[0].download_url;
+                    document.getElementById('currentVersion').textContent = currentData[0].version;
                 }
             }
 
@@ -217,5 +254,5 @@
             loadDownloadUrls();
         });
     </script>
-    </body>
+</body>
 </html>
