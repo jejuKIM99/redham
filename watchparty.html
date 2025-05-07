@@ -38,8 +38,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const { createClient } = supabase;
-    const supabaseUrl = 'YOUR_SUPABASE_URL';
-    const supabaseKey = 'YOUR_SUPABASE_KEY';
+    const supabaseUrl = 'https://hthtzipxhfezjduxskzg.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0aHR6aXB4aGZlempkdXhza3pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE5MTE1MzQsImV4cCI6MjA1NzQ4NzUzNH0.e-SodT9c9kv6Gm4HytAjYoIvnOfQTvFBFzLTiGFaxwg';
     const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
     const roomId = new URLSearchParams(window.location.search).get('room');
@@ -121,5 +121,4 @@
       return match ? match[1] : null;
     }
   </script>
-</body>
 </html>
