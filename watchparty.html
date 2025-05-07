@@ -44,6 +44,7 @@
 
     const roomId = new URLSearchParams(window.location.search).get('room');
     let nickname = '';
+    let player;
 
     // 닉네임 입력 처리
     document.getElementById('nickname-form').addEventListener('submit', async (e) => {
@@ -77,9 +78,7 @@
         return;
       }
       const videoId = extractVideoId(room.video_url);
-      const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube.com/embed/${videoId}`;
-      document.getElementById('video-player').appendChild(iframe);
+      loadYouTubePlayer(videoId);
 
       // 기존 채팅 메시지 로드
       const { data: messages, error: msgError } = await supabaseClient.from('watchparty_messages').select('*').eq('room_id', roomId).order('created_at', { ascending: true });
@@ -105,6 +104,53 @@
         await supabaseClient.from('watchparty_messages').insert({ room_id: roomId, nickname, message_text: messageText });
         document.getElementById('chat-input').value = '';
       });
+
+      // 실시간 영상 동기화 구독
+      supabaseClient
+        .channel(`watchparty_sync:room_id=eq.${roomId}`)
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'watchparty_sync', filter: `room_id=eq.${roomId}` }, payload => {
+          const { current_time, is_playing } = payload.new;
+          if (player) {
+            player.seekTo(current_time, true);
+            if (is_playing) {
+              player.playVideo();
+            } else {
+              player.pauseVideo();
+            }
+          }
+        })
+        .subscribe();
+    }
+
+    function loadYouTubePlayer(videoId) {
+      const tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      window.onYouTubeIframeAPIReady = () => {
+        player = new YT.Player('video-player', {
+          height: '100%',
+          width: '100%',
+          videoId: videoId,
+          playerVars: {
+            'controls': 0, // 컨트롤 숨기기
+            'disablekb': 1, // 키보드 제어 비활성화
+            'fs': 0, // 전체화면 버튼 비활성화
+            'modestbranding': 1,
+            'rel': 0,
+            'showinfo': 0,
+            'iv_load_policy': 3
+          },
+          events: {
+            'onReady': onPlayerReady
+          }
+        });
+      };
+    }
+
+    function onPlayerReady(event) {
+      event.target.setVolume(50); // 초기 볼륨 설정
     }
 
     function displayMessage(message) {
@@ -121,4 +167,5 @@
       return match ? match[1] : null;
     }
   </script>
+</body>
 </html>
