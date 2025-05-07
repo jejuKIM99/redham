@@ -121,10 +121,14 @@
         .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'watchparty_sync', filter: `room_id=eq.${roomId}` }, payload => {
           const { video_time, is_playing } = payload.new;
           if (player) {
-            player.seekTo(video_time, true);
-            if (is_playing) {
+            const currentTime = player.getCurrentTime();
+            if (Math.abs(currentTime - video_time) > 1) { // 1초 이상 차이 날 때만 seekTo
+              player.seekTo(video_time, true);
+            }
+            const isCurrentlyPlaying = player.getPlayerState() === YT.PlayerState.PLAYING;
+            if (is_playing && !isCurrentlyPlaying) {
               player.playVideo();
-            } else {
+            } else if (!is_playing && isCurrentlyPlaying) {
               player.pauseVideo();
             }
           }
