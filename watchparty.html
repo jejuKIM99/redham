@@ -122,13 +122,12 @@
           const { video_time, is_playing } = payload.new;
           if (player) {
             const currentTime = player.getCurrentTime();
-            if (Math.abs(currentTime - video_time) > 1) { // 1초 이상 차이 날 때만 seekTo
+            if (Math.abs(currentTime - video_time) > 2) {
               player.seekTo(video_time, true);
             }
-            const isCurrentlyPlaying = player.getPlayerState() === YT.PlayerState.PLAYING;
-            if (is_playing && !isCurrentlyPlaying) {
+            if (is_playing && player.getPlayerState() !== YT.PlayerState.PLAYING) {
               player.playVideo();
-            } else if (!is_playing && isCurrentlyPlaying) {
+            } else if (!is_playing && player.getPlayerState() === YT.PlayerState.PLAYING) {
               player.pauseVideo();
             }
           }
@@ -183,16 +182,19 @@
         }
       });
 
+      const playerDiv = document.getElementById('player');
+      playerDiv.addEventListener('click', () => {
+        if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+          player.pauseVideo();
+        } else {
+          player.playVideo();
+        }
+      });
+
       supabaseClient.from('watchparty_sync').select('*').eq('room_id', roomId).single().then(({ data, error }) => {
         if (data && !error) {
           player.seekTo(data.video_time, true);
-          if (data.is_playing) {
-            player.playVideo();
-          } else {
-            player.pauseVideo();
-          }
-        } else {
-          player.playVideo(); // 초기 데이터가 없으면 기본적으로 재생
+          // 자동 재생 제거: is_playing 상태에 따라 재생하지 않음
         }
       });
     }
