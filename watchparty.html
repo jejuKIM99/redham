@@ -32,13 +32,17 @@
     #volume-slider { margin-left: 20px; width: 100px; }
     #sync-button { background-color: #e90000; padding: 5px 10px; color: #fff; border: none; cursor: pointer; margin-right: 20px;}
     #chat-container { flex: 1; display: flex; flex-direction: column; border-left: 2px solid #fff; }
-    #chat-messages {font-size: clamp(12px, 1vw, 24px); flex: 1; overflow-y: auto; padding: 10px; background-color: #000; color: #fff; display: flex; flex-direction: column; }
+    #chat-messages {font-size: clamp(12px, 1vw, 24px); flex: 1; overflow-y: auto; padding: 10px; background-color: #000; color: #fff; }
     #chat-form {display: flex; justify-content: space-around; background-color: #e90000; padding: 10px; border-top: 2px solid #fff; }
     #chat-input { width: 600%; background-color: #000; color: #fff; border: none; padding: 5px; }
     @media screen and (max-width: 767px) {
         #video-player { flex: 1.6; }
         #watchparty-container { flex-direction: column; }
         #chat-container { border-left: none; border-top: solid 2px #fff; }
+    }
+    /* iOS에서만 non_click_overlay 비활성화 */
+    @media only screen and (max-width: 767px) and (pointer: coarse) and (orientation: portrait) {
+      #video-player .non_click_overlay { display: none; }
     }
   </style>
 </head>
@@ -207,18 +211,12 @@
         }
       });
 
-      const playerDiv = document.getElementById('player');
-      playerDiv.addEventListener('click', () => {
-        if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-          player.pauseVideo();
-        } else {
-          player.playVideo();
-        }
-      });
-
       supabaseClient.from('watchparty_sync').select('*').eq('room_id', roomId).single().then(({ data, error }) => {
         if (data && !error) {
           player.seekTo(data.video_time, true);
+          if (data.is_playing) {
+            player.playVideo();
+          }
         }
       });
     }
