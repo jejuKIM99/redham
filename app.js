@@ -1294,7 +1294,9 @@ const app = createApp({
       this.watchpartyRooms = data;
     },
     openWatchParty(roomId) {
-      this.$router.push(`/watchparty/${roomId}`);
+      // 절대 경로로 watchparty.html 호출
+      const baseUrl = window.location.origin;
+      window.open(`${baseUrl}/watchparty.html?room=${roomId}`, '_blank', 'noopener,noreferrer');
     }
   },
   watch: {
