@@ -32,7 +32,7 @@
     #volume-slider { margin-left: 20px; width: 100px; }
     #sync-button { background-color: #e90000; padding: 5px 10px; color: #fff; border: none; cursor: pointer; margin-right: 20px;}
     #chat-container { flex: 1; display: flex; flex-direction: column; border-left: 2px solid #fff; }
-    #chat-messages {font-size: clamp(12px, 1vw, 24px); flex: 1; overflow-y: auto; padding: 10px; background-color: #000; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; }
+    #chat-messages {font-weight: bold; font-size: clamp(12px, 0.8vw, 18px); flex: 1; overflow-y: auto; padding: 10px; background-color: #000; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; }
     #chat-form {display: flex; justify-content: space-around; background-color: #e90000; padding: 10px; border-top: 2px solid #fff; }
     #chat-input { width: 600%; background-color: #000; color: #fff; border: none; padding: 5px; }
     @media screen and (max-width: 767px) {
@@ -46,6 +46,8 @@
     }
 
     .system-message {
+      font-weight: 100;
+      font-size: clamp(10px, 0.6vw, 18px);
       color: #e90000;
       text-align: center;
       width: 100%;
