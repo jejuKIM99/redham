@@ -383,6 +383,6 @@ section { max-width: 1040px; width: 100%; margin: 20px auto; padding: 20px; posi
 #video-player { flex: 3; }
 #video-player iframe { width: 100%; height: 100%; border: none; }
 #chat-container { flex: 1; display: flex; flex-direction: column; border-left: 1px solid #ccc; }
-#chat-messages { flex: 1; overflow-y: auto; padding: 10px; }
-#chat-form { padding: 10px; border-top: 1px solid #ccc; }
-#chat-input { width: 70%; padding: 5px; }
+#chat-messages { flex: 1; overflow-y: auto; padding: 10px; background-color: #000; color: #fff;}
+#chat-form { background-color: #e90000; padding: 10px; border-top: 2px solid #fff; }
+#chat-input {background-color: #000; color: #fff; border: none; width: 70%; padding: 5px; }
