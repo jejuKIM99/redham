@@ -407,4 +407,5 @@ section { max-width: 1040px; width: 100%; margin: 20px auto; padding: 20px; posi
 .sidebar-watchparty li:hover::before{
   width: 100%;
   opacity: 1;
+  font-weight: bold;
 }

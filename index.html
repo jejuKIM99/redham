@@ -121,7 +121,7 @@
       </div>
       <div id="sidebar">
         <div class="sidebar-watchparty">
-          <h4>Watch Parties</h4>
+          <h3>Watch Parties</h3>
           <ul id="watchparty-list">
             <li v-for="room in watchpartyRooms" :key="room.id" @click="openWatchParty(room.id)">
               {{ room.room_name || `Room ${room.id}` }}
