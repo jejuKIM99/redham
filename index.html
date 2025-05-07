@@ -120,15 +120,19 @@
         <span></span>
       </div>
       <div id="sidebar">
-        <div class="sidebar-nowplaying">
-          <h4>Movies Now Playing</h4>
-          <ul id="now-playing-list"></ul>
+        <div class="sidebar-watchparty">
+          <h4>Watch Parties</h4>
+          <ul id="watchparty-list">
+            <li v-for="room in watchpartyRooms" :key="room.id" @click="openWatchParty(room.id)">
+              {{ room.room_name || `Room ${room.id}` }}
+            </li>
+          </ul>
         </div>
       </div>
       <div id="sidebar-overlay"></div>
       <div id="page-container" :class="{ blurred: showPostView || showMovieDetail }">
         <div v-if="cp === 'home'" class="page">
-          <h1 style="display: none;" >Red Line Awards Home</h1>
+          <h1 style="display: none;">Red Line Awards Home</h1>
           <div id="main-slider" class="swiper-container">
             <div class="swiper-wrapper">
               <div v-for="(image, index) in mainSliderImages" :key="index" class="swiper-slide">
@@ -838,24 +842,4 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
   <script src="app.js"></script>
-  <script>
-    function adjustBannerPosition() {
-      const footer = document.querySelector('.custom-footer');
-      const leftSidebanner = document.getElementById('left-sidebanner');
-      const rightSidebanner = document.getElementById('right-sidebanner');
-      const footerRect = footer.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-
-      if (footerRect.top < windowHeight) {
-        const overlap = windowHeight - footerRect.top;
-        leftSidebanner.style.bottom = `${overlap+260}px`;
-        rightSidebanner.style.bottom = `${(overlap+260)}px`;
-      } else {
-        leftSidebanner.style.bottom = 'max(20vh,10rem)';
-        rightSidebanner.style.bottom = 'max(20vh,10rem)';
-      }
-    }
-
-    window.addEventListener('scroll', adjustBannerPosition);
-  </script>
-  </html>
+</html>

@@ -1,7 +1,149 @@
 const { createApp } = Vue;
 const { createRouter, createWebHistory } = VueRouter;
 
-// 라우터 설정 (Vue 3 방식)
+const WatchPartyComponent = {
+  template: `
+    <div>
+      <div v-if="!nickname" id="nickname-modal">
+        <form @submit.prevent="submitNickname">
+          <input type="text" v-model="inputNickname" placeholder="닉네임 입력 (최대 10자, 한/영)" required />
+          <button type="submit">참여</button>
+        </form>
+      </div>
+      <div v-else id="watchparty-container">
+        <div id="video-player"></div>
+        <div id="chat-container">
+          <div id="chat-messages">
+            <div v-for="msg in messages" :key="msg.id">
+              {{ msg.nickname }}: {{ msg.message_text }}
+            </div>
+          </div>
+          <form @submit.prevent="sendMessage">
+            <input type="text" v-model="newMessage" placeholder="메시지 입력" />
+            <button type="submit">전송</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  `,
+  data() {
+    return {
+      inputNickname: '',
+      nickname: '',
+      roomId: this.$route.params.roomId,
+      messages: [],
+      newMessage: '',
+      player: null,
+      syncInterval: null
+    };
+  },
+  async mounted() {
+    await this.loadWatchParty();
+    this.setupRealtimeSubscription();
+    this.setupPresence();
+    this.setupYouTubePlayer();
+  },
+  beforeUnmount() {
+    if (this.syncInterval) clearInterval(this.syncInterval);
+    if (this.presenceChannel) this.supabase.removeChannel(this.presenceChannel);
+  },
+  methods: {
+    async submitNickname() {
+      const nickname = this.inputNickname.trim();
+      if (nickname.length > 10 || !/^[a-zA-Z가-힣]+$/.test(nickname)) {
+        alert('닉네임은 1-10자, 한글 또는 영문만 가능합니다.');
+        return;
+      }
+      const { data, error } = await this.supabase.from('watchparty_messages').select('nickname').eq('room_id', this.roomId);
+      if (error) {
+        console.error('닉네임 확인 오류:', error);
+        return;
+      }
+      const existingNicknames = data.map(msg => msg.nickname);
+      if (existingNicknames.includes(nickname)) {
+        alert('이미 사용 중인 닉네임입니다. 다른 닉네임을 선택하세요.');
+        return;
+      }
+      this.nickname = nickname;
+      this.joinWatchParty();
+    },
+    async loadWatchParty() {
+      const { data: room, error } = await this.supabase.from('watchparty_rooms').select('video_url').eq('id', this.roomId).single();
+      if (error || !room) {
+        alert('방을 찾을 수 없습니다.');
+        return;
+      }
+      const videoId = this.extractVideoId(room.video_url);
+      this.setupYouTubePlayer(videoId);
+    },
+    async joinWatchParty() {
+      const { data: messages, error } = await this.supabase.from('watchparty_messages').select('*').eq('room_id', this.roomId).order('created_at', { ascending: true });
+      if (error) {
+        console.error('메시지 로드 오류:', error);
+        return;
+      }
+      this.messages = messages;
+    },
+    setupRealtimeSubscription() {
+      this.supabase
+        .channel(`watchparty_messages:room_id=eq.${this.roomId}`)
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'watchparty_messages', filter: `room_id=eq.${this.roomId}` }, payload => {
+          this.messages.push(payload.new);
+        })
+        .subscribe();
+    },
+    setupPresence() {
+      this.presenceChannel = this.supabase.channel(`watchparty_presence:room_${this.roomId}`);
+      this.presenceChannel
+        .on('presence', { event: 'sync' }, () => {
+          const state = this.presenceChannel.presenceState();
+        })
+        .on('presence', { event: 'join' }, ({ newPresences }) => {})
+        .on('presence', { event: 'leave' }, ({ leftPresences }) => {})
+        .subscribe();
+      this.presenceChannel.track({ nickname: this.nickname });
+    },
+    setupYouTubePlayer(videoId) {
+      const tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      window.onYouTubeIframeAPIReady = () => {
+        this.player = new YT.Player('video-player', {
+          height: '100%',
+          width: '100%',
+          videoId: videoId,
+          events: {
+            'onStateChange': this.onPlayerStateChange
+          }
+        });
+      };
+    },
+    onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.PLAYING) {
+        this.syncInterval = setInterval(this.syncVideoTime, 1000);
+      } else {
+        clearInterval(this.syncInterval);
+      }
+    },
+    async syncVideoTime() {
+      const currentTime = this.player.getCurrentTime();
+      await this.supabase.from('watchparty_sync').upsert({ room_id: this.roomId, current_time: currentTime });
+    },
+    extractVideoId(url) {
+      const regex = /(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/|live\/))([\w-]{11})/;
+      const match = url.match(regex);
+      return match ? match[1] : null;
+    },
+    async sendMessage() {
+      if (!this.newMessage.trim()) return;
+      await this.supabase.from('watchparty_messages').insert({ room_id: this.roomId, nickname: this.nickname, message_text: this.newMessage });
+      this.newMessage = '';
+    }
+  }
+};
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -17,9 +159,10 @@ const router = createRouter({
     { path: '/board/sub1', component: { template: '<div>Board Sub1</div>' }, meta: { title: 'Notices Board', description: 'Stay updated with the latest notices on Red Line Awards.' } },
     { path: '/board/sub2', component: { template: '<div>Board Sub2</div>' }, meta: { title: 'Event Board', description: 'Find out about events on Red Line Awards.' } },
     { path: '/board/sub3', component: { template: '<div>Board Sub3</div>' }, meta: { title: 'Movie Discussion', description: 'Join movie discussions on Red Line Awards.' } },
+    { path: '/watchparty/:roomId', component: WatchPartyComponent, meta: { title: 'Watch Party Room' } },
   ]
 });
-// 메타 태그 수동 관리
+
 router.beforeEach((to, from, next) => {
   document.title = to.meta.title || 'Red Line Awards - Movie Awards Blog';
   const metaDescription = document.querySelector('meta[name="description"]');
@@ -28,6 +171,7 @@ router.beforeEach((to, from, next) => {
   }
   next();
 });
+
 const app = createApp({
   data() {
     return {
@@ -91,10 +235,10 @@ const app = createApp({
         boardSub2: '',
         boardSub3: ''
       },
+      watchpartyRooms: [],
       randomYearList: [],
       randomMonthList: [],
       supabase: null,
-      nowPlayingMovies: [],
       clientIP: "",
       activeMovie: {},
       showMovieDetail: false,
@@ -194,7 +338,7 @@ const app = createApp({
     formatDate(dateString) {
       const date = new Date(dateString);
       const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+      const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     },
@@ -225,7 +369,6 @@ const app = createApp({
             await this.fetchMastersPick();
             await this.fetchEditors();
             await this.fetchEditorsPick();
-            await this.fetchNowPlayingMovies();
             await this.fetchMovieAwards();
             await this.fetchNominees();
             await this.fetchSideBanners();
@@ -558,8 +701,8 @@ const app = createApp({
       } else {
         const array = new Uint8Array(16);
         crypto.getRandomValues(array);
-        array[6] = (array[6] & 0x0f) | 0x40; // version 4
-        array[8] = (array[8] & 0x3f) | 0x80; // variant 1
+        array[6] = (array[6] & 0x0f) | 0x40;
+        array[8] = (array[8] & 0x3f) | 0x80;
         const hex = [...array].map(b => b.toString(16).padStart(2, '0')).join('');
         return `${hex.substr(0,8)}-${hex.substr(8,4)}-${hex.substr(12,4)}-${hex.substr(16,4)}-${hex.substr(20,12)}`;
       }
@@ -744,18 +887,6 @@ const app = createApp({
         }));
       }
     },
-    async fetchNowPlayingMovies() {
-      this.nowPlayingMovies = [
-        { id: 1, title: "Upcoming Service" },
-      ];
-      const list = document.getElementById("now-playing-list");
-      list.innerHTML = "";
-      this.nowPlayingMovies.forEach(movie => {
-        const li = document.createElement("li");
-        li.textContent = movie.title;
-        list.appendChild(li);
-      });
-    },
     async fetchMovieAwards() {
       let { data: awards, error } = await this.supabase.from('movie_awards').select('*');
       if (error) {
@@ -852,33 +983,33 @@ const app = createApp({
     async refreshPosts(menu) {
       switch (menu) {
         case 'awardSub1':
-          await this.fetchMovieAwards(); // awardSub1 데이터 새로고침
+          await this.fetchMovieAwards();
           break;
         case 'awardSub2':
-          await this.fetchMovieAwards(); // awardSub2 데이터 새로고침
+          await this.fetchMovieAwards();
           break;
         case 'awardSub3':
-          await this.fetchNominees(); // awardSub3 데이터 새로고침
+          await this.fetchNominees();
           break;
         case 'listSub1':
-          await this.fetchSoundtrack(); // listSub1 데이터 새로고침
+          await this.fetchSoundtrack();
           break;
         case 'listSub2':
-          await this.fetchMastersPick(); // listSub2 데이터 새로고침
+          await this.fetchMastersPick();
           break;
         case 'listSub3':
-          await this.fetchEditorsPick(); // listSub3 데이터 새로고침
+          await this.fetchEditorsPick();
           break;
         case 'boardSub1':
-          await this.fetchNotices(); // boardSub1 데이터 새로고침
+          await this.fetchNotices();
           break;
         case 'boardSub2':
-          await this.fetchEvents(); // boardSub2 데이터 새로고침
+          await this.fetchEvents();
           break;
         default:
           console.error('Unknown menu:', menu);
       }
-      this.lastRefreshedTime = new Date().toLocaleTimeString(); // 새로고침 시간 업데이트
+      this.lastRefreshedTime = new Date().toLocaleTimeString();
     },
     startLoading() {
       const updateProgress = () => {
@@ -1011,7 +1142,6 @@ const app = createApp({
           if (payload.new.status === 'closed') {
             this.closeChatWindow();
           }
-          // 메시지 상태 업데이트
           this.updateMessageStatuses();
         })
         .subscribe();
@@ -1154,6 +1284,17 @@ const app = createApp({
       const slider = document.querySelector('.vote-slider');
       const value = ((this.voteRating - slider.min) / (slider.max - slider.min)) * 100;
       slider.style.background = `linear-gradient(to right, #e90000 0%, #e90000 ${value}%, #fff ${value}%, #fff 100%)`;
+    },
+    async loadWatchPartyRooms() {
+      const { data, error } = await this.supabase.from('watchparty_rooms').select('*').eq('is_active', true);
+      if (error) {
+        console.error('Error loading watchparty rooms:', error);
+        return;
+      }
+      this.watchpartyRooms = data;
+    },
+    openWatchParty(roomId) {
+      this.$router.push(`/watchparty/${roomId}`);
     }
   },
   watch: {
@@ -1199,6 +1340,7 @@ const app = createApp({
       .subscribe();
     this.setupNomineesRealtime();
     this.refreshNominees();
+    this.loadWatchPartyRooms();
   },
   beforeUnmount() {
     if (this.realtimeChannel) {
