@@ -122,46 +122,58 @@
     }
 
     async function joinWatchParty() {
-      console.log('[joinWatchParty] start');
-      // 1) 방 정보 및 과거 메시지 로드
-      const { data: room } = await supabaseClient.from('watchparty_rooms').select('video_url').eq('id', roomId).single();
-      loadYouTubePlayer(extractVideoId(room.video_url));
-      const { data: messages } = await supabaseClient.from('watchparty_messages')
-        .select('*').eq('room_id', roomId)
-        .order('created_at', { ascending: true });
-      messages.forEach(msg => displayMessage(msg));
-  
-      // 2) Realtime 구독 (from().on().subscribe())
-      console.log('[joinWatchParty] subscribing to real-time messages…');
-      const { error: subError } = await supabaseClient
-        .from(`watchparty_messages:room_id=eq.${roomId}`)
-        .on('INSERT', payload => {
-          console.log('[Realtime] INSERT payload:', payload.new);
-          displayMessage(payload.new);
-        })
-        .subscribe();
-      if (subError) {
-        console.error('[Realtime subscription error]', subError);
+      const { data: room, error } = await supabaseClient.from('watchparty_rooms').select('video_url').eq('id', roomId).single();
+      if (error || !room) {
+        alert('방을 찾을 수 없습니다.');
         return;
       }
-      console.log('[joinWatchParty] subscription OK');
-  
-      // 3) System 메시지 INSERT & 즉시 렌더
-      console.log('[joinWatchParty] inserting System message…');
-      const { data: sysData, error: sysError } = await supabaseClient
-        .from('watchparty_messages')
-        .insert({
-          room_id: roomId,
-          nickname: 'System',
-          message_text: `${nickname}님이 접속하셨습니다.`
-        })
-        .select('*');
-      if (sysError) {
-        console.error('[System INSERT Error]', sysError);
-      } else {
-        console.log('[System INSERT OK]', sysData);
-        displayMessage(sysData[0]);
+      const videoId = extractVideoId(room.video_url);
+      loadYouTubePlayer(videoId);
+
+      const { data: messages, error: msgError } = await supabaseClient.from('watchparty_messages').select('*').eq('room_id', roomId).order('created_at', { ascending: true });
+      if (msgError) {
+        console.error('메시지 로드 오류:', msgError);
+        return;
       }
+      messages.forEach(msg => displayMessage(msg));
+
+      const messageChannel = supabaseClient
+      // 채널 식별자는 임의로, 필터는 on()에서 처리합니다.
+      .channel(`watchparty_messages_channel_${roomId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'watchparty_messages',
+          filter: `room_id=eq.${roomId}`,
+        },
+        ({ new: newMsg }) => {
+          console.log('[Realtime] new message arrived:', newMsg);
+          displayMessage(newMsg);
+        }
+      );
+    
+    // subscribe() 가 비동기이므로 await 해줘야 이후 INSERT부터 확실히 받습니다.
+    await messageChannel.subscribe();
+
+// ─── Realtime 구독 직후에 System 메시지 삽입 ─────────────────
+const { data: sysData, error: sysError } = await supabaseClient
+  .from('watchparty_messages')
+  .insert({
+    room_id: roomId,
+    nickname: 'System',
+    message_text: `${nickname}님이 접속하셨습니다.`
+  })
+  // .select() 호출로 반환된 행을 즉시 받을 수 있도록 함
+  .select();
+
+if (sysError) {
+  console.error('[System INSERT Error]', sysError);
+} else if (sysData && sysData.length > 0) {
+  console.log('[System] inserted:', sysData[0]);
+  displayMessage(sysData[0]);
+}
 
       document.getElementById('chat-form').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -259,15 +271,17 @@
     }
 
     function displayMessage(message) {
-      console.log('[displayMessage] called with →', message);
+      console.log('[displayMessage] rendering:', message);
       const chatMessages = document.getElementById('chat-messages');
       const div = document.createElement('div');
+    
       if (message.nickname === 'System') {
         div.className = 'system-message';
         div.textContent = `<System: "${message.message_text}">`;
       } else {
         div.textContent = `${message.nickname}: ${message.message_text}`;
       }
+    
       chatMessages.appendChild(div);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
