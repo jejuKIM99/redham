@@ -94,7 +94,7 @@
     let nickname = sessionStorage.getItem('nickname') || '';
     let player;
     let syncInterval;
-
+    
     if (nickname) {
       document.getElementById('nickname-modal').style.display = 'none';
       document.getElementById('watchparty-container').style.display = 'flex';
@@ -142,27 +142,39 @@
       messages.forEach(msg => displayMessage(msg));
 
       const messageChannel = supabaseClient
-        .channel(`watchparty_messages_channel_${roomId}`)
-        .on('postgres_changes', {
+      .channel(`watchparty_messages_channel_${roomId}`)
+      .on(
+        'postgres_changes',
+        {
           event: 'INSERT',
           schema: 'public',
           table: 'watchparty_messages',
-          filter: `room_id=eq.${roomId}`
-        }, ({ new: newMsg }) => {
+          filter: `room_id=eq.${roomId}`,
+        },
+        ({ new: newMsg }) => {
+          console.log('[Realtime] new message arrived:', newMsg);
           displayMessage(newMsg);
-        });
-      await messageChannel.subscribe();
+        }
+      );
+    
+    await messageChannel.subscribe();
 
-      // System join message
-      const { data: sysData, error: sysError } = await supabaseClient
-        .from('watchparty_messages')
-        .insert({
-          room_id: roomId,
-          nickname: 'System',
-          message_text: `\"${nickname}\"님이 접속하셨습니다.`
-        })
-        .select();
-      if (sysData && sysData.length) displayMessage(sysData[0]);
+// ─── Realtime 구독 직후에 System 메시지 삽입 ─────────────────
+const { data: sysData, error: sysError } = await supabaseClient
+  .from('watchparty_messages')
+  .insert({
+    room_id: roomId,
+    nickname: 'System',
+    message_text: `\"${nickname}\"님이 접속하셨습니다.`
+  })
+  .select();
+
+if (sysError) {
+  console.error('[System INSERT Error]', sysError);
+} else if (sysData && sysData.length > 0) {
+  console.log('[System] inserted:', sysData[0]);
+  displayMessage(sysData[0]);
+}
 
       document.getElementById('chat-form').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -174,16 +186,11 @@
 
       supabaseClient
         .channel(`watchparty_sync:room_id=eq.${roomId}`)
-        .on('postgres_changes', {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'watchparty_sync',
-          filter: `room_id=eq.${roomId}`
-        }, ({ new: sync }) => {
-          const { video_time, is_playing } = sync;
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'watchparty_sync', filter: `room_id=eq.${roomId}` }, payload => {
+          const { video_time, is_playing } = payload.new;
           if (player) {
-            const current = player.getCurrentTime();
-            if (Math.abs(current - video_time) > 1) {
+            const currentTime = player.getCurrentTime();
+            if (Math.abs(currentTime - video_time) > 2) {
               player.seekTo(video_time, true);
             }
             if (is_playing && player.getPlayerState() !== YT.PlayerState.PLAYING) {
@@ -206,11 +213,16 @@
         player = new YT.Player('player', {
           height: '100%',
           width: '100%',
-          videoId,
+          videoId: videoId,
           playerVars: {
-            controls: 0, disablekb: 1, fs: 0,
-            modestbranding: 1, rel: 0, showinfo: 0,
-            iv_load_policy: 3, playsinline: 1
+            'controls': 0,
+            'disablekb': 1,
+            'fs': 0,
+            'modestbranding': 1,
+            'rel': 0,
+            'showinfo': 0,
+            'iv_load_policy': 3,
+            'playsinline': 1
           },
           events: {
             'onReady': onPlayerReady,
@@ -222,22 +234,35 @@
 
     function onPlayerReady(event) {
       event.target.setVolume(50);
-
-      // 1초마다 서버에 동기화 정보 전송
-      syncInterval = setInterval(syncToServer, 1000);
-
-      document.getElementById('volume-slider').addEventListener('input', e => {
+      const volumeSlider = document.getElementById('volume-slider');
+      volumeSlider.addEventListener('input', (e) => {
         player.setVolume(e.target.value);
       });
-      document.getElementById('sync-button').addEventListener('click', syncFromServer);
 
-      // 초기 동기화
-      syncFromServer();
+      const syncButton = document.getElementById('sync-button');
+      syncButton.addEventListener('click', async () => {
+        const { data, error } = await supabaseClient.from('watchparty_sync').select('*').eq('room_id', roomId).single();
+        if (data && !error) {
+          player.seekTo(data.video_time, true);
+          if (data.is_playing) {
+            player.playVideo();
+          } else {
+            player.pauseVideo();
+          }
+        }
+      });
+
+      supabaseClient.from('watchparty_sync').select('*').eq('room_id', roomId).single().then(({ data, error }) => {
+        if (data && !error) {
+          player.seekTo(data.video_time, true);
+          if (data.is_playing) {
+            player.playVideo();
+          }
+        }
+      });
     }
 
     function onPlayerStateChange(event) {
-      // 상태 변할 때 즉시 동기화
-      syncToServer();
       const syncMessage = document.getElementById('sync-message');
       if (event.data === YT.PlayerState.PLAYING) {
         syncMessage.classList.remove('visible');
@@ -246,40 +271,17 @@
       }
     }
 
-    // 서버에 현재 시간과 상태 upsert
-    async function syncToServer() {
-      if (!player) return;
-      const video_time = player.getCurrentTime();
-      const is_playing = (player.getPlayerState() === YT.PlayerState.PLAYING);
-      const { error } = await supabaseClient
-        .from('watchparty_sync')
-        .upsert({ room_id: roomId, video_time, is_playing }, { onConflict: 'room_id' });
-      if (error) console.error('Sync upsert error:', error);
-    }
-
-    // 서버의 최신 동기화 정보 불러오기
-    async function syncFromServer() {
-      const { data, error } = await supabaseClient
-        .from('watchparty_sync')
-        .select('*')
-        .eq('room_id', roomId)
-        .single();
-      if (data && !error && player) {
-        player.seekTo(data.video_time, true);
-        if (data.is_playing) player.playVideo();
-        else player.pauseVideo();
-      }
-    }
-
     function displayMessage(message) {
       const chatMessages = document.getElementById('chat-messages');
       const div = document.createElement('div');
+    
       if (message.nickname === 'System') {
         div.className = 'system-message';
         div.textContent = `<System: ${message.message_text}>`;
       } else {
         div.textContent = `${message.nickname}: ${message.message_text}`;
       }
+    
       chatMessages.appendChild(div);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
