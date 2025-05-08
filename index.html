@@ -842,4 +842,24 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
   <script src="app.js"></script>
+  <script>
+    function adjustBannerPosition() {
+      const footer = document.querySelector('.custom-footer');
+      const leftSidebanner = document.getElementById('left-sidebanner');
+      const rightSidebanner = document.getElementById('right-sidebanner');
+      const footerRect = footer.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      if (footerRect.top < windowHeight) {
+        const overlap = windowHeight - footerRect.top;
+        leftSidebanner.style.bottom = `${overlap+260}px`;
+        rightSidebanner.style.bottom = `${(overlap+260)}px`;
+      } else {
+        leftSidebanner.style.bottom = 'max(20vh,10rem)';
+        rightSidebanner.style.bottom = 'max(20vh,10rem)';
+      }
+    }
+
+    window.addEventListener('scroll', adjustBannerPosition);
+  </script>
 </html>
