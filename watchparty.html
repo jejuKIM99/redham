@@ -418,7 +418,8 @@ async function joinWatchParty() {
     document.getElementById('chat-input').value = '';
   });
 
-  // 실시간 방 상태 구독
+// 실시간 방 상태 구독
+  let syncChannel = null; // 동기화 구독 채널 변수 추가
   supabaseClient
     .channel(`watchparty_room_status_${roomId}`)
     .on(
@@ -436,6 +437,36 @@ async function joinWatchParty() {
           thumbnailContainer.style.display = 'none';
           const videoId = extractVideoId(video_url);
           loadYouTubePlayer(videoId);
+
+          // 비디오 싱크 구독 추가 (중복 방지)
+          if (!syncChannel) {
+            syncChannel = supabaseClient
+              .channel(`watchparty_sync:room_id=eq.${roomId}`)
+              .on(
+                'postgres_changes',
+                {
+                  event: 'UPDATE',
+                  schema: 'public',
+                  table: 'watchparty_sync',
+                  filter: `room_id=eq.${roomId}`,
+                },
+                (payload) => {
+                  const { video_time, is_playing } = payload.new;
+                  if (player) {
+                    const currentTime = player.getCurrentTime();
+                    if (Math.abs(currentTime - video_time) > 2) {
+                      player.seekTo(video_time, true);
+                    }
+                    if (is_playing && player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                      player.playVideo();
+                    } else if (!is_playing && player.getPlayerState() === YT.PlayerState.PLAYING) {
+                      player.pauseVideo();
+                    }
+                  }
+                }
+              );
+            syncChannel.subscribe();
+          }
         }
       }
     )
@@ -461,6 +492,11 @@ async function joinWatchParty() {
       })
       .subscribe();
   }
+  window.addEventListener('beforeunload', () => {
+  if (syncChannel) {
+    supabaseClient.removeChannel(syncChannel);
+  }
+});
 }
 function turnOffCaptions() {
   if (player && player.setOption) {
