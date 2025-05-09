@@ -353,6 +353,15 @@ async function joinWatchParty() {
     thumbnailContainer.style.display = 'none';
     const videoId = extractVideoId(room.video_url);
     loadYouTubePlayer(videoId);
+    // 서버 동기화 데이터 확인 후 플레이어 상태 설정
+    supabaseClient.from('watchparty_sync').select('*').eq('room_id', roomId).single().then(({ data, error }) => {
+      if (data && !error && player) {
+        player.seekTo(data.video_time, true);
+        if (!data.is_playing) {
+          player.pauseVideo(); // 초기 상태를 일시정지로 설정
+        }
+      }
+    });
   }
 
   // 채팅 메시지 로드
@@ -484,6 +493,7 @@ function loadYouTubePlayer(videoId) {
   };
 }
 
+// onPlayerReady 함수 전체 교체
 function onPlayerReady(event) {
   event.target.setVolume(50);
   const volumeBars = document.querySelectorAll('.volume-bar');
@@ -491,7 +501,7 @@ function onPlayerReady(event) {
 
   function updateVolume(index) {
     const volume = index * 10;
-    player.setVolume(volume);
+    event.target.setVolume(volume);
     volumeBars.forEach((bar, i) => {
       bar.classList.toggle('active', i <= index);
     });
@@ -539,21 +549,26 @@ function onPlayerReady(event) {
   syncButton.addEventListener('click', async () => {
     const { data, error } = await supabaseClient.from('watchparty_sync').select('*').eq('room_id', roomId).single();
     if (data && !error) {
-      player.seekTo(data.video_time, true);
+      event.target.seekTo(data.video_time, true);
       if (data.is_playing) {
-        player.playVideo();
+        event.target.playVideo();
       } else {
-        player.pauseVideo();
+        event.target.pauseVideo();
       }
     }
   });
 
+  // 서버 동기화 데이터로 초기 상태 설정
   supabaseClient.from('watchparty_sync').select('*').eq('room_id', roomId).single().then(({ data, error }) => {
     if (data && !error) {
-      player.seekTo(data.video_time, true);
+      event.target.seekTo(data.video_time, true);
       if (data.is_playing) {
-        player.playVideo();
+        event.target.playVideo();
+      } else {
+        event.target.pauseVideo(); // 명시적으로 일시정지
       }
+    } else {
+      event.target.pauseVideo(); // 데이터 없으면 기본적으로 일시정지
     }
   });
 }
