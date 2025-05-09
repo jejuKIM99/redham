@@ -34,7 +34,8 @@ const WatchPartyComponent = {
       messages: [],
       newMessage: '',
       player: null,
-      syncInterval: null
+      syncInterval: null,
+      reservedRooms: [],
     };
   },
   async mounted() {
@@ -1293,11 +1294,23 @@ const app = createApp({
       }
       this.watchpartyRooms = data;
     },
-    openWatchParty(roomId) {
-      // 절대 경로로 watchparty.html 호출
+    async fetchReservedRooms() {
+      const { data, error } = await this.supabase.from('watchparty_rooms').select('*').eq('is_reserved', true).eq('is_active', false);
+      if (error) {
+        console.error('Error fetching reserved rooms:', error);
+        return;
+      }
+      this.reservedRooms = data;
+    },
+    async openWatchParty(roomId) {
+      const { data, error } = await this.supabase.from('watchparty_rooms').select('room_name').eq('id', roomId).single();
+      if (error || !data) {
+        alert('방을 찾을 수 없습니다.');
+        return;
+      }
       const baseUrl = window.location.origin;
-      window.open(`${baseUrl}/watchparty.html?room=${roomId}`, '_blank', 'noopener,noreferrer');
-    }
+      window.open(`${baseUrl}/watchparty.html?room=${encodeURIComponent(data.room_name)}`, '_blank', 'noopener,noreferrer');
+    },
   },
   watch: {
     cp(newVal) {
@@ -1343,6 +1356,7 @@ const app = createApp({
     this.setupNomineesRealtime();
     this.refreshNominees();
     this.loadWatchPartyRooms();
+    this.fetchReservedRooms();
   },
   beforeUnmount() {
     if (this.realtimeChannel) {
