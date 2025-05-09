@@ -127,7 +127,7 @@
               {{ room.room_name || `Room ${room.id}` }}
             </li>
             <li v-for="room in reservedRooms" :key="room.id" @click="openWatchParty(room.id)">
-              {{ room.room_name || `Reserved Room ${room.id}` }}<br> -[Waiting for broadcast]-
+              {{ room.room_name || `Reserved Room ${room.id}` }}<br><span style="background-color: #e90000;">-[Waiting for broadcast]-</span>
             </li>
           </ul>
         </div>
