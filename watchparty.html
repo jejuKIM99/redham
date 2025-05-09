@@ -200,7 +200,7 @@
 <body>
   <div id="nickname-modal">
     <form id="nickname-form">
-      <input type="text" id="nickname-input" placeholder="닉네임 입력 (최대 10자, 한/영/숫자)" required />
+      <input type="text" id="nickname-input" placeholder="닉네임 입력 (최대 10자, 한/영/숫자)" required autocomplete='off'/>
       <button type="submit">참여</button>
     </form>
   </div>
@@ -236,7 +236,7 @@
     <div id="chat-container">
       <div id="chat-messages"></div>
       <form id="chat-form">
-        <input type="text" id="chat-input" placeholder="메시지 입력" />
+        <input type="text" id="chat-input" placeholder="메시지 입력" autocomplete='off' />
         <button type="submit" style="background-color: #e90000; border: none; color: #fff; font-weight: bold; width: 100%;">Send</button>
       </form>
     </div>
