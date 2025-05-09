@@ -202,6 +202,15 @@
       z-index: 10;
     }
 
+    #thumbnail-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+    }
+
     .system-message {
       font-weight: 100;
       font-size: clamp(10px, 0.6vw, 18px);
@@ -223,7 +232,12 @@
   <div id="watchparty-container" style="display: none;">
     <div id="video-player">
       <div class="non_click_overlay" style="width: 100%; height: 100%; position: absolute;"></div>
-      <div id="waiting-overlay" style="display: none;">송출 대기중 입니다.</div>
+      <div id="waiting-overlay" style="display: none;">
+        <div>송출 대기중 입니다.</div>
+      </div>
+      <div id="thumbnail-container" style="display: none;">
+        <img id="thumbnail-img" src="" alt="Video Thumbnail" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5;" />
+      </div>
       <div id="sync-message">영상 시작 이후 접속하신 경우 우측 동기화 버튼을 눌러주세요.</div>
       <div id="player"></div>
       <div id="controls">
@@ -327,16 +341,21 @@ async function joinWatchParty() {
   }
 
   const waitingOverlay = document.getElementById('waiting-overlay');
+  const thumbnailContainer = document.getElementById('thumbnail-container');
+  const thumbnailImg = document.getElementById('thumbnail-img');
   if (room.is_reserved && !room.is_active) {
     waitingOverlay.style.display = 'flex';
-    return;
+    thumbnailContainer.style.display = 'block';
+    const videoId = extractVideoId(room.video_url);
+    thumbnailImg.src = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
   } else {
     waitingOverlay.style.display = 'none';
+    thumbnailContainer.style.display = 'none';
+    const videoId = extractVideoId(room.video_url);
+    loadYouTubePlayer(videoId);
   }
 
-  const videoId = extractVideoId(room.video_url);
-  loadYouTubePlayer(videoId);
-
+  // 채팅 메시지 로드
   const { data: messages, error: msgError } = await supabaseClient.from('watchparty_messages').select('*').eq('room_id', roomId).order('created_at', { ascending: true });
   if (msgError) {
     console.error('메시지 로드 오류:', msgError);
@@ -346,6 +365,7 @@ async function joinWatchParty() {
   const chatMessages = document.getElementById('chat-messages');
   chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
 
+  // 채팅 메시지 실시간 구독
   const messageChannel = supabaseClient
     .channel(`watchparty_messages_channel_${roomId}`)
     .on(
@@ -364,6 +384,7 @@ async function joinWatchParty() {
 
   await messageChannel.subscribe();
 
+  // 시스템 메시지 삽입
   const { data: sysData, error: sysError } = await supabaseClient
     .from('watchparty_messages')
     .insert({
@@ -380,6 +401,7 @@ async function joinWatchParty() {
     displayMessage(sysData[0]);
   }
 
+  // 채팅 입력 폼 이벤트 리스너
   document.getElementById('chat-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const messageText = document.getElementById('chat-input').value.trim();
@@ -388,23 +410,49 @@ async function joinWatchParty() {
     document.getElementById('chat-input').value = '';
   });
 
+  // 실시간 방 상태 구독
   supabaseClient
-    .channel(`watchparty_sync:room_id=eq.${roomId}`)
-    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'watchparty_sync', filter: `room_id=eq.${roomId}` }, payload => {
-      const { video_time, is_playing } = payload.new;
-      if (player) {
-        const currentTime = player.getCurrentTime();
-        if (Math.abs(currentTime - video_time) > 2) {
-          player.seekTo(video_time, true);
-        }
-        if (is_playing && player.getPlayerState() !== YT.PlayerState.PLAYING) {
-          player.playVideo();
-        } else if (!is_playing && player.getPlayerState() === YT.PlayerState.PLAYING) {
-          player.pauseVideo();
+    .channel(`watchparty_room_status_${roomId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'watchparty_rooms',
+        filter: `id=eq.${roomId}`,
+      },
+      (payload) => {
+        const { is_active, is_reserved, video_url } = payload.new;
+        if (!is_reserved && is_active) {
+          waitingOverlay.style.display = 'none';
+          thumbnailContainer.style.display = 'none';
+          const videoId = extractVideoId(video_url);
+          loadYouTubePlayer(videoId);
         }
       }
-    })
+    )
     .subscribe();
+
+  // 비디오 싱크 구독
+  if (!room.is_reserved || room.is_active) {
+    supabaseClient
+      .channel(`watchparty_sync:room_id=eq.${roomId}`)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'watchparty_sync', filter: `room_id=eq.${roomId}` }, payload => {
+        const { video_time, is_playing } = payload.new;
+        if (player) {
+          const currentTime = player.getCurrentTime();
+          if (Math.abs(currentTime - video_time) > 2) {
+            player.seekTo(video_time, true);
+          }
+          if (is_playing && player.getPlayerState() !== YT.PlayerState.PLAYING) {
+            player.playVideo();
+          } else if (!is_playing && player.getPlayerState() === YT.PlayerState.PLAYING) {
+            player.pauseVideo();
+          }
+        }
+      })
+      .subscribe();
+  }
 }
 
 function loadYouTubePlayer(videoId) {
