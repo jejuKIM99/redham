@@ -174,7 +174,6 @@
         .text-wapper {
             display: flex;
             flex-direction: column;
-            /* align-items: center; */
         }
 
         h2 {
@@ -219,20 +218,11 @@
         }
 
         /* Additional Styles for Price and Per */
-        .price {
-            font-size: 3rem;
+        .donation {
+            font-size: 1.5rem;
             font-weight: bold;
             color: #e90000;
-            border-bottom: solid 2px #fff;
-        }
-
-        .per {
-            font-size: 1rem;
-            font-weight: bold;
-            color: #fff;
-            border-bottom: solid 2px #fff;
-            position: relative;
-            bottom: -0.31rem;
+            margin-bottom: 10px;
         }
 
         ul {
@@ -373,29 +363,29 @@
                 <div class="banner-section">
                     <h3>Top Banner</h3>
                     <div class="text-wapper">
-                        <p>Advertisements are placed in the top sliding banner and can only be purchased on a monthly basis.</p>
-                        <p><span class="price">1500$</span><span class="per">/month</span></p>
+                        <p>Advertisements are placed in the top sliding banner and can only be supported via monthly donations.</p>
+                        <p class="donation">Suggested Donation: $1500 / month</p>
                         <ul>
                             <li>The advertisement images must be designed in 1200x400px with a .jpg file format.</li>
                             <li>There is no limit to the number of ads a single person can place.</li>
                             <li>Ads will be displayed identically on mobile devices, ensuring maximum advertising effectiveness.</li>
                         </ul>
-                        <p class="sub_notice">Click the "Download Form" button below, fill out the form, and send it via email. Your submission will be reviewed and published accordingly.</p>
-                        <button>Apply</button>
+                        <p class="sub_notice">Click the "Donate" button below, complete the form, and send it via email. Your donation will be reviewed and applied accordingly.</p>
+                        <button>Donate</button>
                     </div>
                 </div>
                 <div class="banner-section">
                     <h3>Side Banner</h3>
                     <div class="text-wapper">
-                        <p>Advertisements are placed in the side banner and can be purchased on a monthly basis.</p>
-                        <p><span class="price">500$</span><span class="per">/month</span></p>
+                        <p>Advertisements are placed in the side banner and are supported via monthly donations.</p>
+                        <p class="donation">Suggested Donation: $500 / month</p>
                         <ul>
                             <li>The advertisement images must be designed in 300x600px with a .jpg file format.</li>
                             <li>There is no limit to the number of ads a single person can place.</li>
                             <li>Ads will be displayed on both desktop and mobile devices.</li>
                         </ul>
-                        <p class="sub_notice">Click the "Download Form" button below, fill out the form, and send it via email. Your submission will be reviewed and published accordingly.</p>
-                        <button>Apply</button>
+                        <p class="sub_notice">Click the "Donate" button below, complete the form, and send it via email. Your donation will be reviewed and applied accordingly.</p>
+                        <button>Donate</button>
                     </div>
                 </div>
             </div>
@@ -408,31 +398,31 @@
                 <div class="post-section">
                     <h3>RLA Recommendation</h3>
                     <div class="text-wapper">
-                        <p>Advertisements are placed in the RLA Recommendation section.</p>
-                        <p><span class="price">300$</span><span class="per">/post</span></p>
+                        <p>Advertisements are placed in the RLA Recommendation section and supported by donation.</p>
+                        <p class="donation">Suggested Donation: $300 / post</p>
                         <ul>
                             <li>Each post will be featured for one week.</li>
                             <li>Content must be approved by the editorial team.</li>
                             <li>Ads will be displayed on both desktop and mobile devices.</li>
                             <li>Advertisement posts are distinguished by an "AD" badge.</li>
                         </ul>
-                        <p class="sub_notice">Click the "Download Form" button below, fill out the form, and send it via email. Your submission will be reviewed and published accordingly.</p>
-                        <button>Apply</button>
+                        <p class="sub_notice">Click the "Donate" button below, complete the form, and send it via email. Your donation will be reviewed and applied accordingly.</p>
+                        <button>Donate</button>
                     </div>
                 </div>
                 <div class="post-section">
                     <h3>Master's Pick</h3>
                     <div class="text-wapper">
-                        <p>Advertisements are placed in the Master's Pick section.</p>
-                        <p><span class="price">500$</span><span class="per">/post</span></p>
+                        <p>Advertisements are placed in the Master's Pick section and supported by donation.</p>
+                        <p class="donation">Suggested Donation: $500 / post</p>
                         <ul>
                             <li>Each post will be featured for two weeks.</li>
                             <li>Content must be approved by the editorial team.</li>
                             <li>Ads will be displayed on both desktop and mobile devices.</li>
                             <li>Advertisement posts are distinguished by an "AD" badge.</li>
                         </ul>
-                        <p class="sub_notice">Click the "Download Form" button below, fill out the form, and send it via email. Your submission will be reviewed and published accordingly.</p>
-                        <button>Apply</button>
+                        <p class="sub_notice">Click the "Donate" button below, complete the form, and send it via email. Your donation will be reviewed and applied accordingly.</p>
+                        <button>Donate</button>
                     </div>
                 </div>
             </div>
@@ -460,12 +450,12 @@
                     <p></p>
                     <p></p>
                     <p></p>
-                    <button>Download Form</button>
+                    <button>Donate</button>
                 </div>
             </div>
         </section>
         <p style=" padding: 6px; text-align: center; max-width: 1000px; color: #747474; font-size: 10px;">
-            * All fees collected from business-related services are reinvested into the continuous improvement and development of the Red Line Awards platform. *
+            * All donations collected from business-related services are reinvested into the continuous improvement and development of the Red Line Awards platform. *
         </p>
     </main>
 
@@ -485,61 +475,56 @@
                         h2: 'Banner Ads',
                         topBanner: {
                             h3: 'Top Banner',
-                            p: 'Advertisements are placed in the top sliding banner and can only be purchased on a monthly basis.',
-                            price: '1500$',
-                            per: '/month',
+                            p: 'Advertisements are placed in the top sliding banner and can only be supported via monthly donations.',
+                            donation: 'Suggested Donation: $1500 / month',
                             details: [
                                 '● The advertisement images must be designed in 1200x400px with a .jpg file format.',
                                 '● There is no limit to the number of ads a single person can place.',
                                 '● Ads will be displayed identically on mobile devices, ensuring maximum advertising effectiveness.'
                             ],
-                            sub_notice: 'Click the "Download Form" button below, fill out the form, and send it via email. Your submission will be reviewed and published accordingly.',
-                            button: 'Download Form'
+                            sub_notice: 'Click the "Donate" button below, complete the form, and send it via email. Your donation will be reviewed and applied accordingly.',
+                            button: 'Donate'
                         },
                         sideBanner: {
                             h3: 'Side Banner',
-                            p: 'Advertisements can be placed in the left and right side banners and are available for purchase only on a monthly basis.',
-                            price: '1500$',
-                            per: '/month',
+                            p: 'Advertisements are placed in the side banner and are supported via monthly donations.',
+                            donation: 'Suggested Donation: $500 / month',
                             details: [
-                                '● The advertisement images for the side banners must be designed in 200x600px with a .jpg file format. Different images can be placed on the left and right sides.',
-                                '● To maintain consistent ad quality, only one advertiser is allowed on a first-come, first-served basis.',
-                                '● Unlike the top banner, side banners are displayed across all menus, but they are only visible on PC screens (1600px or wider).'
+                                '● The advertisement images must be designed in 300x600px with a .jpg file format.',
+                                '● There is no limit to the number of ads a single person can place.',
+                                '● Ads will be displayed on both desktop and mobile devices.'
                             ],
-                            sub_notice: 'Click the "Download Form" button below, fill out the form, and send it via email. Your submission will be reviewed and published accordingly.',
-                            button: 'Download Form'
+                            sub_notice: 'Click the "Donate" button below, complete the form, and send it via email. Your donation will be reviewed and applied accordingly.',
+                            button: 'Donate'
                         }
                     },
                     post: {
                         h2: 'Post Ads',
                         rla: {
                             h3: 'RLA Recommendation',
-                            p: 'Advertisements are placed in the RLA Recommendation section.',
-                            price: '300$',
-                            per: '/post',
+                            p: 'Advertisements are placed in the RLA Recommendation section and supported by donation.',
+                            donation: 'Suggested Donation: $300 / post',
                             details: [
                                 '● Each post will be featured for one week.',
                                 '● Content must be approved by the editorial team.',
                                 '● Ads will be displayed on both desktop and mobile devices.',
                                 '● Advertisement posts are distinguished by an "AD" badge.'
                             ],
-                            sub_notice: 'Click the "Download Form" button below, fill out the form, and send it via email. Your submission will be reviewed and published accordingly.',
-                            button: 'Download Form'
+                            sub_notice: 'Click the "Donate" button below, complete the form, and send it via email. Your donation will be reviewed and applied accordingly.',
+                            button: 'Donate'
                         },
                         master: {
                             h3: 'Master\'s Pick',
-                            p: 'Advertisements are placed in the Master\'s Pick section.',
-                            price: '600$',
-                            per: '/post',
+                            p: 'Advertisements are placed in the Master\'s Pick section and supported by donation.',
+                            donation: 'Suggested Donation: $500 / post',
                             details: [
-                                '● Each post will be permanently published unless requested otherwise.',
-                                '● Content is created by the editorial team and published after consultation with the client.',
-                                '● The post creation process may take up to 2 weeks.',
-                                '● Advertisements are displayed on both desktop and mobile devices.',
+                                '● Each post will be featured for two weeks.',
+                                '● Content must be approved by the editorial team.',
+                                '● Ads will be displayed on both desktop and mobile devices.',
                                 '● Advertisement posts are distinguished by an "AD" badge.'
                             ],
-                            sub_notice: 'Click the "Download Form" button below, fill out the form, and send it via email. Your submission will be reviewed and published accordingly.',
-                            button: 'Download Form'
+                            sub_notice: 'Click the "Donate" button below, complete the form, and send it via email. Your donation will be reviewed and applied accordingly.',
+                            button: 'Donate'
                         }
                     },
                     editor: {
@@ -553,7 +538,7 @@
                         p7: '● Get direct support through a 1:1 messaging system with the admin team.',
                         p8: '● All submissions are reviewed by our team before publication to ensure consistent quality and credibility.',
                         p9: 'If you’re interested in becoming an editor, please download the registration form below and submit it via email. After a review process, we will guide you through the next steps to complete your editor registration.',
-                        button: 'Download Form'
+                        button: 'Donate'
                     }
                 },
                 kr: {
@@ -561,76 +546,70 @@
                         h2: '배너광고',
                         topBanner: {
                             h3: '상단배너',
-                            p: '상단 슬라이딩 배너에 광고가 게재되며, 월 단위로만 구매 가능합니다.',
-                            price: '1500$',
-                            per: '/월',
+                            p: '상단 슬라이딩 배너에 광고가 게재되며, 월 단위 기부로만 지원됩니다.',
+                            donation: '추천 기부금: 1500$ /월',
                             details: [
                                 '● 광고 이미지는 1200x400px 크기의 .jpg 파일 형식으로 디자인되어야 합니다.',
                                 '● 한 사람이 게재할 수 있는 광고 수에는 제한이 없습니다.',
                                 '● 광고는 모바일 기기에서도 동일하게 표시되어 최대의 광고 효과를 보장합니다.'
                             ],
-                            sub_notice: '하단의 \'양식 다운로드\' 버튼을 눌러 양식을 다운 받아 작성 후 메일로 보내주시면 검토 후 게재됩니다.',
-                            button: '양식 다운로드'
+                            sub_notice: '하단의 "Donate" 버튼을 눌러 양식을 작성 후 이메일로 보내주시면 기부를 검토하여 반영해 드립니다.',
+                            button: 'Donate'
                         },
                         sideBanner: {
                             h3: '사이드배너',
-                            p: '좌우 사이드 배너에 광고가 게재되며, 월 단위로 구매 가능합니다.',
-                            price: '1500$',
-                            per: '/월',
+                            p: '좌우 사이드 배너에 광고가 게재되며, 월 단위 기부로 지원됩니다.',
+                            donation: '추천 기부금: 500$ /월',
                             details: [
-                                '● 광고 이미지는 200x600px 크기의 .jpg 파일 형식으로 디자인되어야 합니다.',
-                                '● 양측 다른 이미지를 개제할 수 있습니다.',
-                                '● 광고의 일관된 품질을 위해 선착순으로 1명만 개제가 가능합니다.',
-                                '● 상단 배너와 달리 모든 메뉴에서 노출됩니다. 단, pc(너비1600px이상급)에서만 노출됩니다.'
+                                '● 광고 이미지는 300x600px 크기의 .jpg 파일 형식으로 디자인되어야 합니다.',
+                                '● 한 사람이 게재할 수 있는 광고 수에는 제한이 없습니다.',
+                                '● 광고는 데스크톱 및 모바일 기기 모두에 표시됩니다.'
                             ],
-                            sub_notice: '하단의 \'양식 다운로드\' 버튼을 눌러 양식을 다운 받아 작성 후 메일로 보내주시면 검토 후 게재됩니다.',
-                            button: '양식 다운로드'
+                            sub_notice: '하단의 "Donate" 버튼을 눌러 양식을 작성 후 이메일로 보내주시면 기부를 검토하여 반영해 드립니다.',
+                            button: 'Donate'
                         }
                     },
                     post: {
                         h2: '게시글광고',
                         rla: {
                             h3: 'RLA 추천',
-                            p: '메인 페이지의 RLA 추천 섹션에 광고가 게재됩니다.',
-                            price: '300$',
-                            per: '/게시글',
+                            p: '메인 페이지 RLA 추천 섹션에 광고가 게재되며, 기부로 지원됩니다.',
+                            donation: '추천 기부금: 300$ /게시글',
                             details: [
                                 '● 각 게시글은 1주일 동안 특집으로 다뤄집니다.',
                                 '● 내용은 편집 팀의 승인을 받아야 합니다.',
-                                '● 광고는 데스크톱과 모바일 기기 모두에 표시됩니다.',
+                                '● 광고는 데스크톱 및 모바일 기기 모두에 표시됩니다.',
                                 '● 광고 게시글은 AD 뱃지로 구분합니다.'
                             ],
-                            sub_notice: '하단의 \'양식 다운로드\' 버튼을 눌러 양식을 다운 받아 작성 후 메일로 보내주시면 검토 후 게재됩니다.',
-                            button: '양식 다운로드'
+                            sub_notice: '하단의 "Donate" 버튼을 눌러 양식을 작성 후 이메일로 보내주시면 기부를 검토하여 반영해 드립니다.',
+                            button: 'Donate'
                         },
                         master: {
                             h3: '마스터의 선택',
-                            p: 'Master\'s Pick 메뉴에 광고가 게재됩니다.',
-                            price: '600$',
-                            per: '/게시글',
+                            p: 'Master\'s Pick 섹션에 광고가 게재되며, 기부로 지원됩니다.',
+                            donation: '추천 기부금: 500$ /게시글',
                             details: [
-                                '● 각 게시글은 별도의 요청이 없는 한 영구히 게재됩니다.',
-                                '● 내용은 편집팀에서 작성하여 고객과 협의 후 게시됩니다.',
-                                '● 포스트 작업기간은 최장 2주입니다.',
-                                '● 광고는 데스크톱과 모바일 기기 모두에 표시됩니다.',
+                                '● 각 게시글은 2주 동안 게재됩니다.',
+                                '● 내용은 편집 팀의 승인을 받아야 합니다.',
+                                '● 광고는 데스크톱 및 모바일 기기 모두에 표시됩니다.',
                                 '● 광고 게시글은 AD 뱃지로 구분합니다.'
                             ],
-                            sub_notice: '하단의 \'양식 다운로드\' 버튼을 눌러 양식을 다운 받아 작성 후 메일로 보내주시면 검토 후 게재됩니다.',
-                            button: '양식 다운로드'
+                            sub_notice: '하단의 "Donate" 버튼을 눌러 양식을 작성 후 이메일로 보내주시면 기부를 검토하여 반영해 드립니다.',
+                            button: 'Donate'
                         }
                     },
                     editor: {
                         h2: '에디터 등록',
-                        p1: '에디터 등록을 통해 콘텐츠를 검토하고 추천할 수 있는 에디터 권한을 부여받을 수 있습니다.등록된 에디터는 저희 플랫폼의 Editor\'s Pick 섹션에 영화에 대한 논평을 게시할 수 있습니다. 에디터로서 귀하는 전문 지식과 통찰력을 청중과 공유하고, 콘텐츠 기반 비즈니스를 시작할 기회를 얻게 됩니다.',
+                        p1: '에디터 등록을 통해 콘텐츠를 검토하고 추천할 수 있는 권한을 부여받습니다. 승인된 에디터는 Editor\'s Pick 섹션에 리뷰를 게시할 수 있으며, 전문 지식과 통찰력을 공유할 기회를 얻습니다.',
                         p2: '에디터 혜택',
-                        p3: '● Editor\'s Pick에 글을 게시하여 나만의 콘텐츠 비즈니스를 시작하세요.',
-                        p4: '● 조회수 및 광고 수익에 따른 보상을 받을 수 있습니다.',
-                        p5: '● 높은 품질과 조회수를 유지할 경우, 다음 해 광고 수익 비율이 상승합니다.',
-                        p6: '● 에디터 전용 프로그램을 통해 편리한 포스트 작성, 수익/조회수 통계, 광고 신뢰도 분석 기능을 제공합니다.',
-                        p7: '● 1:1 문의 기능을 통해 관리자와 직접 소통이 가능합니다.',
-                        p8: '● 에디터가 작성한 글은 R.L.A 팀에서 사전 검토 후 게시되며, 콘텐츠 품질 유지를 지원합니다.',
-                        p9: '에디터 등록에 관심이 있으시다면, 아래 등록 양식을 다운로드하여 이메일로 제출해 주세요. 등록 심사 후 에디터로 활동하실 수 있도록 안내해드리겠습니다.',
-                        button: '양식 다운로드'
+                        p3: '● Editor\'s Pick에 글을 게시하여 콘텐츠 비즈니스를 시작하세요.',
+                        p4: '● 조회수 및 광고 게재에 따른 보상을 기부금 형태로 받습니다.',
+                        p5: '● 높은 품질과 조회수 유지를 통해 다음 해 기부금 비율을 높일 수 있습니다.',
+                        p6: '● 전용 에디터 도구로 작성, 통계, 분석 기능을 이용할 수 있습니다.',
+                        p7: '● 관리자와 1:1 메시지로 직접 소통이 가능합니다.',
+                        p8: '● 모든 게시물은 사전 검토 후 게시되어 품질을 보장합니다.',
+                        p9: '에디터 등록을 원하시면 하단의 "Donate" 버튼을 눌러 양식을 작성 후 이메일로 보내주세요. 검토 후 안내해드립니다.',
+                        button: 'Donate'
                     }
                 }
             };
@@ -646,8 +625,7 @@
                 document.querySelector('#banner h2').textContent = data.banner.h2;
                 document.querySelector('#banner .banner-section:nth-child(1) h3').textContent = data.banner.topBanner.h3;
                 document.querySelector('#banner .banner-section:nth-child(1) p:nth-child(1)').textContent = data.banner.topBanner.p;
-                document.querySelector('#banner .banner-section:nth-child(1) .price').textContent = data.banner.topBanner.price;
-                document.querySelector('#banner .banner-section:nth-child(1) .per').textContent = data.banner.topBanner.per;
+                document.querySelector('#banner .banner-section:nth-child(1) .donation').textContent = data.banner.topBanner.donation;
                 document.querySelector('#banner .banner-section:nth-child(1) .sub_notice').textContent = data.banner.topBanner.sub_notice;
                 const topBannerDetails = document.querySelector('#banner .banner-section:nth-child(1) ul');
                 topBannerDetails.innerHTML = '';
@@ -660,8 +638,7 @@
 
                 document.querySelector('#banner .banner-section:nth-child(2) h3').textContent = data.banner.sideBanner.h3;
                 document.querySelector('#banner .banner-section:nth-child(2) p:nth-child(1)').textContent = data.banner.sideBanner.p;
-                document.querySelector('#banner .banner-section:nth-child(2) .price').textContent = data.banner.sideBanner.price;
-                document.querySelector('#banner .banner-section:nth-child(2) .per').textContent = data.banner.sideBanner.per;
+                document.querySelector('#banner .banner-section:nth-child(2) .donation').textContent = data.banner.sideBanner.donation;
                 document.querySelector('#banner .banner-section:nth-child(2) .sub_notice').textContent = data.banner.sideBanner.sub_notice;
                 const sideBannerDetails = document.querySelector('#banner .banner-section:nth-child(2) ul');
                 sideBannerDetails.innerHTML = '';
@@ -676,8 +653,7 @@
                 document.querySelector('#post h2').textContent = data.post.h2;
                 document.querySelector('#post .post-section:nth-child(1) h3').textContent = data.post.rla.h3;
                 document.querySelector('#post .post-section:nth-child(1) p:nth-child(1)').textContent = data.post.rla.p;
-                document.querySelector('#post .post-section:nth-child(1) .price').textContent = data.post.rla.price;
-                document.querySelector('#post .post-section:nth-child(1) .per').textContent = data.post.rla.per;
+                document.querySelector('#post .post-section:nth-child(1) .donation').textContent = data.post.rla.donation;
                 document.querySelector('#post .post-section:nth-child(1) .sub_notice').textContent = data.post.rla.sub_notice;
                 const rlaDetails = document.querySelector('#post .post-section:nth-child(1) ul');
                 rlaDetails.innerHTML = '';
@@ -690,8 +666,7 @@
 
                 document.querySelector('#post .post-section:nth-child(2) h3').textContent = data.post.master.h3;
                 document.querySelector('#post .post-section:nth-child(2) p:nth-child(1)').textContent = data.post.master.p;
-                document.querySelector('#post .post-section:nth-child(2) .price').textContent = data.post.master.price;
-                document.querySelector('#post .post-section:nth-child(2) .per').textContent = data.post.master.per;
+                document.querySelector('#post .post-section:nth-child(2) .donation').textContent = data.post.master.donation;
                 document.querySelector('#post .post-section:nth-child(2) .sub_notice').textContent = data.post.master.sub_notice;
                 const masterDetails = document.querySelector('#post .post-section:nth-child(2) ul');
                 masterDetails.innerHTML = '';
@@ -704,15 +679,16 @@
 
                 // Editor tab
                 document.querySelector('#editor h2').textContent = data.editor.h2;
-                document.querySelector('#editor .text-wrapper p:nth-child(1)').textContent = data.editor.p1;
-                document.querySelector('#editor .text-wrapper p:nth-child(2)').textContent = data.editor.p2;
-                document.querySelector('#editor .text-wrapper p:nth-child(3)').textContent = data.editor.p3;
-                document.querySelector('#editor .text-wrapper p:nth-child(4)').textContent = data.editor.p4;
-                document.querySelector('#editor .text-wrapper p:nth-child(5)').textContent = data.editor.p5;
-                document.querySelector('#editor .text-wrapper p:nth-child(6)').textContent = data.editor.p6;
-                document.querySelector('#editor .text-wrapper p:nth-child(7)').textContent = data.editor.p7;
-                document.querySelector('#editor .text-wrapper p:nth-child(8)').textContent = data.editor.p8;
-                document.querySelector('#editor .text-wrapper p:nth-child(9)').textContent = data.editor.p9;
+                const editorPs = document.querySelectorAll('#editor .text-wrapper p');
+                editorPs[0].textContent = data.editor.p1;
+                editorPs[1].textContent = data.editor.p2;
+                editorPs[2].textContent = data.editor.p3;
+                editorPs[3].textContent = data.editor.p4;
+                editorPs[4].textContent = data.editor.p5;
+                editorPs[5].textContent = data.editor.p6;
+                editorPs[6].textContent = data.editor.p7;
+                editorPs[7].textContent = data.editor.p8;
+                editorPs[8].textContent = data.editor.p9;
                 document.querySelector('#editor .text-wrapper button').textContent = data.editor.button;
 
                 // Animate the content
@@ -763,7 +739,6 @@
             );
         });
     </script>
-    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'929479be8ccbb04f',t:'MTc0MzQ3MjY0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93212e1a3ba0070d',t:'MTc0NDk0ODAzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 
 </html>
