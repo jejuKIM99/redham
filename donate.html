@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7KNRXLZGDH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-7KNRXLZGDH');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business - Red Line Awards</title>
+    <link rel="icon" href="./favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css">
+    <link href="https://fonts.cdnfonts.com/css/free-license" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            background-color: #000;
+            font-family: Galmuri11, sans-serif;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE and Edge */
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari and Opera */
+        }
+
+        /* Navigation Bar */
+        #navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: #e90000;
+            z-index: 1000;
+            height: 58px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: solid 2px #fff;
+        }
+
+        #navbar ul {
+            text-align: center;
+            font-size: min(16px, 4vw);
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        #navbar li {
+            margin: 0 20px;
+        }
+
+        #navbar a {
+            color: #e90000;
+            text-shadow: -1px 0px #fff, 0px 1px #fff, 1px 0px #fff, 0px -1px #fff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        #navbar a.active {
+            color: #fff;
+            text-shadow: none;
+        }
+
+        /* Language Toggle Switch */
+        .switch {
+            position: absolute;
+            right: 20px;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e90000;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            display: flex;
+            font-size: 12px;
+            font-weight: 700;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            content: "EN";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: #000;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #fff;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+            background-color: #e90000;
+            content: "KR";
+        }
+
+        /* Main Content */
+        main {
+            padding-top: 86px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            align-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-content {
+            display: none;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Donate Section */
+        .donate-section {
+            max-width: 1200px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-wrapper img {
+            max-width: min(300px, 40vw);
+            margin: 0 10px;
+        }
+
+        .donate-text {
+            text-align: center;
+            margin-bottom: 40px;
+            border: solid 2px #fff;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+         p {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            background: #e90000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: Galmuri11, sans-serif;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #ff3333;
+        }
+
+        /* Editor Section */
+        .editor-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .image-wrapper {
+            width: 70%;
+            position: relative;
+            height: 270px;
+        }
+
+        .text-wrapper {
+            width: 55%;
+        }
+
+        .editor-img {
+            position: absolute;
+            width: 300px;
+            height: 200px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, z-index 0.3s ease;
+            z-index: 1;
+        }
+
+        .editor-img:nth-child(1) {
+            left: 0;
+            top: 0;
+            transform: rotate(-10deg);
+        }
+
+        .editor-img:nth-child(2) {
+            left: 50px;
+            top: 20px;
+            transform: rotate(-5deg);
+        }
+
+        .editor-img:nth-child(3) {
+            left: 100px;
+            top: 40px;
+            transform: rotate(0deg);
+        }
+
+        .editor-img:nth-child(4) {
+            left: 150px;
+            top: 20px;
+            transform: rotate(5deg);
+        }
+
+        .editor-img:nth-child(5) {
+            left: 200px;
+            top: 0;
+            transform: rotate(10deg);
+        }
+
+        .editor-img:hover {
+            z-index: 10;
+        }
+
+        .editor-img:nth-child(1):hover {
+            transform: scale(1.1) rotate(-10deg);
+        }
+
+        .editor-img:nth-child(2):hover {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .editor-img:nth-child(3):hover {
+            transform: scale(1.1) rotate(0deg);
+        }
+
+        .editor-img:nth-child(4):hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .editor-img:nth-child(5):hover {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        @media (max-width: 997px) {
+            .editor-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .image-wrapper, .text-wrapper {
+                width: 100%;
+            }
+
+            .image-wrapper {
+                height: auto;
+            }
+
+            .editor-img {
+                position: static;
+                margin: 10px auto;
+                transform: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav id="navbar">
+        <ul>
+            <li><a href="#donate" class="active">Donate</a></li>
+            <li><a href="#editor">Editor Registration</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main>
+        <label class="switch">
+            <input type="checkbox" id="language-toggle">
+            <span class="slider"></span>
+        </label>
+        <!-- Donate Tab -->
+        <section id="donate" class="tab-content active">
+            <h2>Donate</h2>
+            <div class="donate-section">
+                <div class="logo-wrapper">
+                    <img src="logo.png" alt="Logo">
+                    <img src="https://documentation.opencollective.com/~gitbook/image?url=https%3A%2F%2F1478228768-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Forganizations%252F-LWSZizNMEjL8_DrMNdF%252Fsites%252Fsite_oiQZv%252Flogo%252FMO1kSukbY6qlZtQAcYnA%252F03%2520%2520Logotype.png%3Falt%3Dmedia%26token%3D2c569d40-930b-4afc-87cd-63c9738bd385&width=320&dpr=4&quality=100&sign=da1ea8a&sv=2" alt="Open Collective Logo">
+                </div>
+                <div class="donate-text">
+                    <p>Dear friends of Red Line Awards,</p>
+                    <p>Your generosity empowers us to shine a spotlight on even more remarkable films and creators.</p>
+                    <p>Every donation, no matter how small, ensures our platform continues to thrive and grow.</p>
+                    <p>With your support, we can enhance our services, improve the viewing experience, and sustain Red Line Awards for years to come.</p>
+                    <p>Please join us today—your contribution makes our future brighter.</p>
+                </div>
+                <a href="https://opencollective.com/rla/contribute" target="_blank" rel="noopener"><button>Donate</button></a>
+            </div>
+        </section>
+
+        <!-- Editor Registration Tab -->
+        <section id="editor" class="tab-content">
+            <h2>Editor Registration</h2>
+            <div class="editor-section">
+                <div class="image-wrapper">
+                    <img src="business/4.png" alt="Editor Image 1" class="editor-img">
+                    <img src="business/5.png" alt="Editor Image 2" class="editor-img">
+                    <img src="business/3.png" alt="Editor Image 3" class="editor-img">
+                    <img src="business/2.png" alt="Editor Image 4" class="editor-img">
+                    <img src="business/1.png" alt="Editor Image 5" class="editor-img">
+                </div>
+                <div class="text-wrapper">
+                    <p>By registering as an editor, you gain the authority to review and recommend content on our platform. Approved editors can publish film reviews and commentary in our Editor\'s Pick section. As an editor, you’ll have the opportunity to share your insights and expertise with a wider audience and launch your own content-driven business.</p>
+                    <p>Benefits of Being an Editor</p>
+                    <p>● Start your own business by publishing articles in Editor\'s Pick.</p>
+                    <p>● Earn rewards based on views and ad placements.</p>
+                    <p>● Maintain high-quality content and strong viewership to increase your ad revenue share the following year.</p>
+                    <p>● Use our exclusive editor tools to write posts, track performance stats, and analyze ad reliability.</p>
+                    <p>● Get direct support through a 1:1 messaging system with the admin team.</p>
+                    <p>● All submissions are reviewed by our team before publication to ensure consistent quality and credibility.</p>
+                    <p>If you’re interested in becoming an editor, please download the registration form below and submit it via email. After a review process, we will guide you through the next steps to complete your editor registration.</p>
+                    <a href="https://opencollective.com/rla/onboarding/contact-info" target="_blank" rel="noopener"><button>Donate</button></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Open Collective Backers Badge -->
+        <div class="oc-badge" style="margin-top: 20px;">
+            <script src="https://opencollective.com/rla/collectives.js?role=backer"></script>
+        </div>
+    </main>
+
+    <!-- GSAP Library for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('#navbar a');
+            const contents = document.querySelectorAll('.tab-content');
+            const languageToggle = document.getElementById('language-toggle');
+            let currentLang = 'en'; // Default language is English
+
+            // Language content data
+            const contentData = {
+                en: {
+                    donate: {
+                        h2: 'Donate',
+                        p1: 'Dear friends of Red Line Awards,',
+                        p2: 'Your generosity empowers us to shine a spotlight on even more remarkable films and creators.',
+                        p3: 'Every donation, no matter how small, ensures our platform continues to thrive and grow.',
+                        p4: 'With your support, we can enhance our services, improve the viewing experience, and sustain Red Line Awards for years to come.',
+                        p5: 'Please join us today—your contribution makes our future brighter.',
+                        button: 'Donate'
+                    },
+                    editor: {
+                        h2: 'Editor Registration',
+                        p1: 'By registering as an editor, you gain the authority to review and recommend content on our platform. Approved editors can publish film reviews and commentary in our Editor\'s Pick section. As an editor, you’ll have the opportunity to share your insights and expertise with a wider audience and launch your own content-driven business.',
+                        p2: 'Benefits of Being an Editor',
+                        p3: '● Start your own business by publishing articles in Editor\'s Pick.',
+                        p4: '● Earn rewards based on views and ad placements.',
+                        p5: '● Maintain high-quality content and strong viewership to increase your ad revenue share the following year.',
+                        p6: '● Use our exclusive editor tools to write posts, track performance stats, and analyze ad reliability.',
+                        p7: '● Get direct support through a 1:1 messaging system with the admin team.',
+                        p8: '● All submissions are reviewed by our team before publication to ensure consistent quality and credibility.',
+                        p9: 'If you’re interested in becoming an editor, please download the registration form below and submit it via email. After a review process, we will guide you through the next steps to complete your editor registration.',
+                        button: 'Download Form'
+                    }
+                },
+                kr: {
+                    donate: {
+                        h2: '기부',
+                        p1: 'Red Line Awards를 아껴주시는 여러분께,',
+                        p2: '여러분의 후원은 더 많은 뛰어난 영화를 세상에 알리는 원동력이 됩니다.',
+                        p3: '작은 정성 하나하나가 우리 플랫폼의 지속 성장과 발전을 가능하게 합니다.',
+                        p4: '여러분의 지원으로 더 나은 서비스 경험을 제공하고, Red Line Awards의 미래를 안전하게 지켜나갈 수 있습니다.',
+                        p5: '지금 기부로 동참해 주시고, 우리의 여정을 함께 빛내주세요.',
+                        button: '기부'
+                    },
+                    editor: {
+                        h2: '에디터 등록',
+                        p1: '에디터 등록을 통해 콘텐츠를 검토하고 추천할 수 있는 권한을 부여받습니다. 승인된 에디터는 Editor\'s Pick 섹션에 리뷰를 게시할 수 있으며, 전문 지식과 통찰력을 공유할 기회를 얻습니다.',
+                        p2: '에디터 혜택',
+                        p3: '● Editor\'s Pick에 글을 게시하여 콘텐츠 비즈니스를 시작하세요.',
+                        p4: '● 조회수 및 광고 게재에 따른 보상을 기부금 형태로 받습니다.',
+                        p5: '● 높은 품질과 조회수 유지를 통해 다음 해 기부금 비율을 높일 수 있습니다.',
+                        p6: '● 전용 에디터 도구로 작성, 통계, 분석 기능을 이용할 수 있습니다.',
+                        p7: '● 관리자와 1:1 메시지로 직접 소통이 가능합니다.',
+                        p8: '● 모든 게시물은 사전 검토 후 게시되어 품질을 보장합니다.',
+                        p9: '에디터 등록을 원하시면 하단의 "양식 다운로드드" 버튼을 눌러 양식을 작성 후 이메일로 보내주세요. 검토 후 안내해드립니다.',
+                        button: '양식 다운로드드'
+                    }
+                }
+            };
+
+            // Function to update content based on language with animation
+            function updateContent(lang) {
+                const data = contentData[lang];
+                // Update navbar
+                document.querySelector('#navbar a[href="#donate"]').textContent = lang === 'en' ? 'Donate' : '기부';
+                document.querySelector('#navbar a[href="#editor"]').textContent = lang === 'en' ? 'Editor Registration' : '에디터 등록';
+                // Donate tab
+                document.querySelector('#donate h2').textContent = data.donate.h2;
+                const donatePs = document.querySelectorAll('#donate .donate-text p');
+                donatePs[0].textContent = data.donate.p1;
+                donatePs[1].textContent = data.donate.p2;
+                donatePs[2].textContent = data.donate.p3;
+                donatePs[3].textContent = data.donate.p4;
+                donatePs[4].textContent = data.donate.p5;
+                document.querySelector('#donate button').textContent = data.donate.button;
+                // Editor tab
+                document.querySelector('#editor h2').textContent = data.editor.h2;
+                const editorPs = document.querySelectorAll('#editor .text-wrapper p');
+                editorPs[0].textContent = data.editor.p1;
+                editorPs[1].textContent = data.editor.p2;
+                editorPs[2].textContent = data.editor.p3;
+                editorPs[3].textContent = data.editor.p4;
+                editorPs[4].textContent = data.editor.p5;
+                editorPs[5].textContent = data.editor.p6;
+                editorPs[6].textContent = data.editor.p7;
+                editorPs[7].textContent = data.editor.p8;
+                editorPs[8].textContent = data.editor.p9;
+                document.querySelector('#editor .text-wrapper button').textContent = data.editor.button;
+
+                // Animate the content
+                gsap.fromTo('.tab-content.active',
+                    { y: 50, opacity: 0 },
+                    { duration: 0.5, y: 0, opacity: 1, ease: 'power2.out' }
+                );
+            }
+
+            // Tab Switching Functionality
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = e.target.getAttribute('href').substring(1);
+
+                    // Update active tab styling
+                    tabs.forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    // Show/hide content with animation
+                    contents.forEach(content => {
+                        if (content.id === target) {
+                            content.classList.add('active');
+                            gsap.fromTo(content,
+                                { y: 100, opacity: 0 },
+                                { duration: 0.5, y: 0, opacity: 1, ease: 'power2.out' }
+                            );
+                        } else {
+                            content.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            // Language Toggle Functionality
+            languageToggle.addEventListener('change', () => {
+                currentLang = languageToggle.checked ? 'kr' : 'en';
+                updateContent(currentLang);
+            });
+
+            // Initial setup: Load English content
+            updateContent('en');
+
+            // Initial animation for Donate tab
+            gsap.fromTo('#donate',
+                { y: 100, opacity: 0 },
+                { duration: 0.5, y: 0, opacity: 1, ease: 'power2.out' }
+            );
+        });
+    </script>
+</body>
+
+</html>
